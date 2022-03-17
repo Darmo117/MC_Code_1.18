@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<language name="MC Code" section="Scripts" extensions="*.mccode" version="1" kateversion="2.4">
+  <highlighting>
+    <list name="keywords">
+      <item>import</item>
+      <item>as</item>
+      <item>schedule</item>
+      <item>var</item>
+      <item>const</item>
+      <item>editable</item>
+      <item>public</item>
+      <item>function</item>
+      <item>return</item>
+      <item>if</item>
+      <item>then</item>
+      <item>else</item>
+      <item>elseif</item>
+      <item>while</item>
+      <item>for</item>
+      <item>do</item>
+      <item>end</item>
+      <item>del</item>
+      <item>break</item>
+      <item>continue</item>
+      <item>wait</item>
+      <item>repeat</item>
+      <item>forever</item>
+      <item>try</item>
+      <item>except</item>
+    </list>
+    <list name="operators">
+      <item>in</item>
+      <item>not</item>
+      <item>and</item>
+      <item>or</item>
+    </list>
+    <list name="literals">
+      <item>null</item>
+      <item>true</item>
+      <item>false</item>
+    </list>
+    <list name="builtin_constants">
+      <item>WORLD</item>
+      <item>INF</item>
+      <item>PI</item>
+      <item>E</item>
+
+      <item>CHAT</item>
+      <item>CONSOLE</item>
+      <item>BOTH</item>
+
+      <item>DIFF_PEACEFUL</item>
+      <item>DIFF_EASY</item>
+      <item>DIFF_NORMAL</item>
+      <item>DIFF_HARD</item>
+
+      <item>GM_SURVIVAL</item>
+      <item>GM_SPECTATOR</item>
+      <item>GM_CREATIVE</item>
+      <item>GM_ADVENTURE</item>
+
+      <item>TIME_DAY</item>
+      <item>TIME_NIGHT</item>
+      <item>TIME_NOON</item>
+      <item>TIME_MIDNIGHT</item>
+      <item>TIME_SUNRISE</item>
+      <item>TIME_SUNSET</item>
+
+      <item>WEATHER_CLEAR</item>
+      <item>WEATHER_RAIN</item>
+      <item>WEATHER_THUNDER</item>
+    </list>
+    <list name="builtin_functions">
+      <item>__name__</item>
+
+      <item>to_block</item>
+      <item>to_boolean</item>
+      <item>to_float</item>
+      <item>to_int</item>
+      <item>to_item</item>
+      <item>to_list</item>
+      <item>to_map</item>
+      <item>to_pos</item>
+      <item>to_relative_pos</item>
+      <item>to_resource_location</item>
+      <item>to_set</item>
+      <item>to_string</item>
+
+      <item>floor</item>
+      <item>ceil</item>
+      <item>sqrt</item>
+      <item>cbrt</item>
+      <item>exp</item>
+      <item>cos</item>
+      <item>sin</item>
+      <item>tan</item>
+      <item>acos</item>
+      <item>asin</item>
+      <item>atan</item>
+      <item>atan2</item>
+      <item>degrees</item>
+      <item>radians</item>
+      <item>hypot</item>
+      <item>log</item>
+      <item>log10</item>
+      <item>abs</item>
+      <item>round</item>
+      <item>min</item>
+      <item>max</item>
+      <item>len</item>
+      <item>range</item>
+      <item>sorted</item>
+      <item>reversed</item>
+      <item>print</item>
+      <item>error</item>
+      <item>set_random_seed</item>
+      <item>random_int</item>
+      <item>random_float</item>
+      <item>is_instance</item>
+    </list>
+    <list name="comment_tasks">
+      <item>TODO</item>
+      <item>FIXME</item>
+      <item>TEST</item>
+      <item>DEBUG</item>
+      <item>XXXX</item>
+    </list>
+    <contexts>
+      <context attribute="Normal Text" lineEndContext="#pop" name="Normal Text">
+        <Float attribute="Float" context="#stay"/>
+        <Int attribute="Integer" context="#stay"/>
+        <keyword attribute="Keyword" context="#stay" String="keywords"/>
+        <keyword attribute="Operator" context="#stay" String="operators"/>
+        <keyword attribute="Builtin Constant" context="#stay" String="builtin_constants"/>
+        <keyword attribute="Builtin Function" context="#stay" String="builtin_functions"/>
+        <DetectChar attribute="String" context="string" char="&quot;"/>
+        <RegExpr attribute="Command Argument" context="#stay" String="\$(?:\$|\d+)(?=[^$\w])"/>
+        <keyword attribute="Literal" context="#stay" String="literals"/>
+        <DetectIdentifier attribute="Identifier"/>
+        <DetectChar attribute="Comment" context="comment" char="#"/>
+        <RegExpr attribute="Operator" context="#stay" String="(?:[:&lt;&gt;!=+*/%^-]=|//=|[-+*/%^:;,()[\]{}.&lt;&gt;])"/>
+        <RegExpr attribute="Error" context="#stay" String="[^ \n\r\t]"/>
+      </context>
+      <context attribute="String" lineEndContext="#pop" name="string">
+        <RegExpr attribute="Escape" String="\\[n&quot;\\]" context="#stay"/>
+        <RegExpr attribute="Error" String="\\[^n&quot;\\]" context="#stay"/>
+        <DetectChar attribute="String" context="#pop" char="&quot;"/>
+      </context>
+      <context attribute="Comment" lineEndContext="#pop" name="comment">
+        <keyword attribute="Comment Task" context="#stay" String="comment_tasks"/>
+      </context>
+    </contexts>
+    <itemDatas>
+      <itemData name="Normal Text" defStyleNum="dsNormal"/>
+      <itemData name="Keyword" defStyleNum="dsKeyword"/>
+      <itemData name="Operator" defStyleNum="dsOperator"/>
+      <itemData name="Identifier" defStyleNum="dsVariable"/>
+      <itemData name="Literal" defStyleNum="dsConstant"/>
+      <itemData name="Integer" defStyleNum="dsDecVal"/>
+      <itemData name="Float" defStyleNum="dsFloat"/>
+      <itemData name="String" defStyleNum="dsString"/>
+      <itemData name="Escape" defStyleNum="dsSpecialChar"/>
+      <itemData name="Builtin Constant" defStyleNum="dsConstant"/>
+      <itemData name="Builtin Function" defStyleNum="dsBuiltIn"/>
+      <itemData name="Command Argument" defStyleNum="dsBuiltIn"/>
+      <itemData name="Comment" defStyleNum="dsComment"/>
+      <itemData name="Comment Task" defStyleNum="dsAlert"/>
+      <itemData name="Error" defStyleNum="dsError"/>
+    </itemDatas>
+  </highlighting>
+  <general>
+    <comments>
+      <comment name="singleLine" start="#"/>
+    </comments>
+    <keywords casesensitive="1"/>
+  </general>
+</language>
