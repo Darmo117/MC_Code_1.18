@@ -31,7 +31,7 @@ public @interface Method {
   /**
    * Metadata for the returned value.
    */
-  ReturnMeta returnTypeMetadata() default @ReturnMeta();
+  ReturnMeta returnTypeMetadata() default @ReturnMeta;
 
   /**
    * Documentation string for the method.
