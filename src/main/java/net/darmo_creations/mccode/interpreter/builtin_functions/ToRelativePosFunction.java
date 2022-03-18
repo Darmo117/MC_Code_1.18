@@ -5,8 +5,8 @@ import net.darmo_creations.mccode.interpreter.ProgramManager;
 import net.darmo_creations.mccode.interpreter.Scope;
 import net.darmo_creations.mccode.interpreter.annotations.Function;
 import net.darmo_creations.mccode.interpreter.type_wrappers.AnyType;
-import net.darmo_creations.mccode.interpreter.type_wrappers.BooleanType;
 import net.darmo_creations.mccode.interpreter.type_wrappers.PosType;
+import net.darmo_creations.mccode.interpreter.type_wrappers.StringType;
 import net.darmo_creations.mccode.interpreter.types.BuiltinFunction;
 import net.darmo_creations.mccode.interpreter.types.Position;
 
@@ -15,9 +15,9 @@ import net.darmo_creations.mccode.interpreter.types.Position;
  */
 @Function(parametersDoc = {
     "The absolute position to make relative.",
-    "Whether the x coordinate should be relative.",
-    "Whether the y coordinate should be relative.",
-    "Whether the z coordinate should be relative."},
+    "The prefix to apply to the x coordinate. May be null.",
+    "The prefix to apply to the x coordinate. May be null.",
+    "The prefix to apply to the x coordinate. May be null."},
     returnDoc = "A new position object.",
     doc = "Casts an absolute position into a relative position.")
 public class ToRelativePosFunction extends BuiltinFunction {
@@ -27,18 +27,18 @@ public class ToRelativePosFunction extends BuiltinFunction {
   public ToRelativePosFunction() {
     super("to_relative_pos", ProgramManager.getTypeInstance(PosType.class), false,
         new Parameter("pos", ProgramManager.getTypeInstance(AnyType.class)),
-        new Parameter("x_relative", ProgramManager.getTypeInstance(BooleanType.class)),
-        new Parameter("y_relative", ProgramManager.getTypeInstance(BooleanType.class)),
-        new Parameter("z_relative", ProgramManager.getTypeInstance(BooleanType.class)));
+        new Parameter("x_prefix", ProgramManager.getTypeInstance(StringType.class), true),
+        new Parameter("y_prefix", ProgramManager.getTypeInstance(StringType.class), true),
+        new Parameter("z_prefix", ProgramManager.getTypeInstance(StringType.class), true));
   }
 
   @Override
   public Object apply(final Scope scope) {
     Object posObject = this.getParameterValue(scope, 0);
-    Boolean xRelative = this.getParameterValue(scope, 1);
-    Boolean yRelative = this.getParameterValue(scope, 2);
-    Boolean zRelative = this.getParameterValue(scope, 3);
+    Position.Relativity xRelativity = Position.Relativity.fromString(this.getParameterValue(scope, 1));
+    Position.Relativity yRelativity = Position.Relativity.fromString(this.getParameterValue(scope, 2));
+    Position.Relativity zRelativity = Position.Relativity.fromString(this.getParameterValue(scope, 3));
     Position pos = ProgramManager.getTypeInstance(PosType.class).explicitCast(scope, posObject);
-    return new Position(pos, xRelative, yRelative, zRelative);
+    return new Position(pos, xRelativity, yRelativity, zRelativity);
   }
 }

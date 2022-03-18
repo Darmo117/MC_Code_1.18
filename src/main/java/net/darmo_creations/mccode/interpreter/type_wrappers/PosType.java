@@ -62,17 +62,17 @@ public class PosType extends TypeBase<Position> {
     return z;
   }
 
-  @Property(name = "x_relative", doc = "Indicates whether the x component is relative (tilde notation).")
+  @Property(name = "x_relative", doc = "Indicates whether the x component is relative (tilde or caret notation).")
   public Boolean isXRelative(final Position self) {
     return self.isXRelative();
   }
 
-  @Property(name = "y_relative", doc = "Indicates whether the y component is relative (tilde notation).")
+  @Property(name = "y_relative", doc = "Indicates whether the y component is relative (tilde or caret notation).")
   public Boolean isYRelative(final Position self) {
     return self.isYRelative();
   }
 
-  @Property(name = "z_relative", doc = "Indicates whether the z component is relative (tilde notation).")
+  @Property(name = "z_relative", doc = "Indicates whether the z component is relative (tilde or caret notation).")
   public Boolean isZRelative(final Position self) {
     return self.isZRelative();
   }
@@ -170,7 +170,7 @@ public class PosType extends TypeBase<Position> {
   @Override
   protected Object __minus__(final Scope scope, final Position self) {
     return new Position(-self.getX(), -self.getY(), -self.getZ(),
-        self.isXRelative(), self.isYRelative(), self.isZRelative());
+        self.getXRelativity(), self.getYRelativity(), self.getZRelativity());
   }
 
   @Override
@@ -270,9 +270,9 @@ public class PosType extends TypeBase<Position> {
       if (list.size() != 3) {
         throw new EvaluationException(scope, "mccode.interpreter.error.pos_list_format", list);
       }
-      Pair<Double, Boolean> resX = this.extractComponent(scope, list.get(0));
-      Pair<Double, Boolean> resY = this.extractComponent(scope, list.get(1));
-      Pair<Double, Boolean> resZ = this.extractComponent(scope, list.get(2));
+      Pair<Double, Position.Relativity> resX = this.extractComponent(scope, list.get(0));
+      Pair<Double, Position.Relativity> resY = this.extractComponent(scope, list.get(1));
+      Pair<Double, Position.Relativity> resZ = this.extractComponent(scope, list.get(2));
       return new Position(resX.getLeft(), resY.getLeft(), resZ.getLeft(),
           resX.getRight(), resY.getRight(), resZ.getRight());
 
@@ -280,9 +280,9 @@ public class PosType extends TypeBase<Position> {
       if (map.size() != 3 || !map.containsKey("x") || !map.containsKey("y") || !map.containsKey("z")) {
         throw new EvaluationException(scope, "mccode.interpreter.error.pos_map_format", map);
       }
-      Pair<Double, Boolean> resX = this.extractComponent(scope, map.get("x"));
-      Pair<Double, Boolean> resY = this.extractComponent(scope, map.get("y"));
-      Pair<Double, Boolean> resZ = this.extractComponent(scope, map.get("z"));
+      Pair<Double, Position.Relativity> resX = this.extractComponent(scope, map.get("x"));
+      Pair<Double, Position.Relativity> resY = this.extractComponent(scope, map.get("y"));
+      Pair<Double, Position.Relativity> resZ = this.extractComponent(scope, map.get("z"));
       return new Position(resX.getLeft(), resY.getLeft(), resZ.getLeft(),
           resX.getRight(), resY.getRight(), resZ.getRight());
     }
@@ -290,20 +290,19 @@ public class PosType extends TypeBase<Position> {
     return super.explicitCast(scope, o);
   }
 
-  private Pair<Double, Boolean> extractComponent(final Scope scope, final Object o) {
+  private Pair<Double, Position.Relativity> extractComponent(final Scope scope, final Object o) {
     if (o instanceof Number n) {
-      return new ImmutablePair<>(n.doubleValue(), false);
+      return new ImmutablePair<>(n.doubleValue(), Position.Relativity.ABSOLUTE);
     } else if (o instanceof String s) {
-      boolean relative = false;
-      if (s.charAt(0) == '~') {
-        relative = true;
+      Position.Relativity relativity = Position.Relativity.fromString(s.charAt(0) + "");
+      if (relativity.isRelative()) {
         if (s.length() == 1) {
           s = "0";
         } else {
           s = s.substring(1);
         }
       }
-      return new ImmutablePair<>(Double.parseDouble(s), relative);
+      return new ImmutablePair<>(Double.parseDouble(s), relativity);
     } else {
       throw new CastException(scope, ProgramManager.getTypeInstance(FloatType.class), ProgramManager.getTypeForValue(o));
     }
@@ -315,15 +314,17 @@ public class PosType extends TypeBase<Position> {
     tag.putDouble(X_KEY, self.getX());
     tag.putDouble(Y_KEY, self.getY());
     tag.putDouble(Z_KEY, self.getZ());
-    tag.putBoolean(X_REL_KEY, self.isXRelative());
-    tag.putBoolean(Y_REL_KEY, self.isYRelative());
-    tag.putBoolean(Z_REL_KEY, self.isZRelative());
+    tag.putString(X_REL_KEY, self.getXRelativity().getSymbol());
+    tag.putString(Y_REL_KEY, self.getYRelativity().getSymbol());
+    tag.putString(Z_REL_KEY, self.getZRelativity().getSymbol());
     return tag;
   }
 
   @Override
   public Position readFromNBT(final Scope scope, final CompoundTag tag) {
     return new Position(tag.getDouble(X_KEY), tag.getDouble(Y_KEY), tag.getDouble(Z_KEY),
-        tag.getBoolean(X_REL_KEY), tag.getBoolean(Y_REL_KEY), tag.getBoolean(Z_REL_KEY));
+        Position.Relativity.fromString(tag.getString(X_REL_KEY)),
+        Position.Relativity.fromString(tag.getString(Y_REL_KEY)),
+        Position.Relativity.fromString(tag.getString(Z_REL_KEY)));
   }
 }

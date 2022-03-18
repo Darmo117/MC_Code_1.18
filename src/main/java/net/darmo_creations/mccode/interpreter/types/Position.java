@@ -19,9 +19,9 @@ public class Position implements Comparable<Position> {
   private final double x;
   private final double y;
   private final double z;
-  private final boolean xRelative;
-  private final boolean yRelative;
-  private final boolean zRelative;
+  private final Relativity xRelativity;
+  private final Relativity yRelativity;
+  private final Relativity zRelativity;
 
   /**
    * Create an absolute position.
@@ -31,7 +31,7 @@ public class Position implements Comparable<Position> {
    * @param z Z component.
    */
   public Position(final double x, final double y, final double z) {
-    this(x, y, z, false, false, false);
+    this(x, y, z, Relativity.ABSOLUTE, Relativity.ABSOLUTE, Relativity.ABSOLUTE);
   }
 
   /**
@@ -40,7 +40,8 @@ public class Position implements Comparable<Position> {
    * @param other The position to copy.
    */
   public Position(final Position other) {
-    this(other.getX(), other.getY(), other.getZ(), other.isXRelative(), other.isYRelative(), other.isZRelative());
+    this(other.getX(), other.getY(), other.getZ(),
+        other.getXRelativity(), other.getYRelativity(), other.getZRelativity());
   }
 
   /**
@@ -65,59 +66,59 @@ public class Position implements Comparable<Position> {
   /**
    * Create a relative position.
    *
-   * @param x         X component.
-   * @param y         Y component.
-   * @param z         Z component.
-   * @param xRelative True if the X component is relative (tilde notation), false otherwise.
-   * @param yRelative True if the Y component is relative (tilde notation), false otherwise.
-   * @param zRelative True if the Z component is relative (tilde notation), false otherwise.
+   * @param x           X component.
+   * @param y           Y component.
+   * @param z           Z component.
+   * @param xRelativity True if the X component is relative (tilde notation), false otherwise.
+   * @param yRelativity True if the Y component is relative (tilde notation), false otherwise.
+   * @param zRelativity True if the Z component is relative (tilde notation), false otherwise.
    */
   public Position(final double x, final double y, final double z,
-                  final boolean xRelative, final boolean yRelative, final boolean zRelative) {
+                  final Relativity xRelativity, final Relativity yRelativity, final Relativity zRelativity) {
     this.x = x;
     this.y = y;
     this.z = z;
-    this.xRelative = xRelative;
-    this.yRelative = yRelative;
-    this.zRelative = zRelative;
+    this.xRelativity = xRelativity;
+    this.yRelativity = yRelativity;
+    this.zRelativity = zRelativity;
   }
 
   /**
    * Create a relative position from another.
    *
-   * @param other     The position to copy. Its relative flags are ignored.
-   * @param xRelative True if the X component is relative (tilde notation), false otherwise.
-   * @param yRelative True if the Y component is relative (tilde notation), false otherwise.
-   * @param zRelative True if the Z component is relative (tilde notation), false otherwise.
+   * @param other       The position to copy. Its relative flags are ignored.
+   * @param xRelativity True if the X component is relative (tilde notation), false otherwise.
+   * @param yRelativity True if the Y component is relative (tilde notation), false otherwise.
+   * @param zRelativity True if the Z component is relative (tilde notation), false otherwise.
    */
-  public Position(final Position other, final boolean xRelative, final boolean yRelative, final boolean zRelative) {
-    this(other.getX(), other.getY(), other.getZ(), xRelative, yRelative, zRelative);
+  public Position(final Position other, final Relativity xRelativity, final Relativity yRelativity, final Relativity zRelativity) {
+    this(other.getX(), other.getY(), other.getZ(), xRelativity, yRelativity, zRelativity);
   }
 
   /**
    * Create a relative position from another.
    *
-   * @param vector    The vector.
-   * @param xRelative True if the X component is relative (tilde notation), false otherwise.
-   * @param yRelative True if the Y component is relative (tilde notation), false otherwise.
-   * @param zRelative True if the Z component is relative (tilde notation), false otherwise.
-   */
-  @SuppressWarnings("unused")
-  public Position(final Vec3 vector, final boolean xRelative, final boolean yRelative, final boolean zRelative) {
-    this(vector.x, vector.y, vector.z, xRelative, yRelative, zRelative);
-  }
-
-  /**
-   * Create a relative position from another.
-   *
-   * @param vector    The vector.
-   * @param xRelative True if the X component is relative (tilde notation), false otherwise.
-   * @param yRelative True if the Y component is relative (tilde notation), false otherwise.
-   * @param zRelative True if the Z component is relative (tilde notation), false otherwise.
+   * @param vector      The vector.
+   * @param xRelativity True if the X component is relative (tilde notation), false otherwise.
+   * @param yRelativity True if the Y component is relative (tilde notation), false otherwise.
+   * @param zRelativity True if the Z component is relative (tilde notation), false otherwise.
    */
   @SuppressWarnings("unused")
-  public Position(final Vec3i vector, final boolean xRelative, final boolean yRelative, final boolean zRelative) {
-    this(vector.getX(), vector.getY(), vector.getZ(), xRelative, yRelative, zRelative);
+  public Position(final Vec3 vector, final Relativity xRelativity, final Relativity yRelativity, final Relativity zRelativity) {
+    this(vector.x, vector.y, vector.z, xRelativity, yRelativity, zRelativity);
+  }
+
+  /**
+   * Create a relative position from another.
+   *
+   * @param vector      The vector.
+   * @param xRelativity True if the X component is relative (tilde notation), false otherwise.
+   * @param yRelativity True if the Y component is relative (tilde notation), false otherwise.
+   * @param zRelativity True if the Z component is relative (tilde notation), false otherwise.
+   */
+  @SuppressWarnings("unused")
+  public Position(final Vec3i vector, final Relativity xRelativity, final Relativity yRelativity, final Relativity zRelativity) {
+    this(vector.getX(), vector.getY(), vector.getZ(), xRelativity, yRelativity, zRelativity);
   }
 
   /**
@@ -143,31 +144,31 @@ public class Position implements Comparable<Position> {
 
   /**
    * Return the command representation of the x coordinate.
-   * Features the tilde character if the component is relative.
+   * Features the tilde/caret character if the component is relative.
    */
   public String getXCommandRepresentation() {
-    return formatRelative(this.getX(), this.isXRelative());
+    return formatRelativePosition(this.getX(), this.xRelativity);
   }
 
   /**
    * Return the command representation of the y coordinate.
-   * Features the tilde character if the component is relative.
+   * Features the tilde/caret character if the component is relative.
    */
   public String getYCommandRepresentation() {
-    return formatRelative(this.getY(), this.isYRelative());
+    return formatRelativePosition(this.getY(), this.yRelativity);
   }
 
   /**
    * Return the command representation of the z coordinate.
-   * Features the tilde character if the component is relative.
+   * Features the tilde/caret character if the component is relative.
    */
   public String getZCommandRepresentation() {
-    return formatRelative(this.getZ(), this.isZRelative());
+    return formatRelativePosition(this.getZ(), this.zRelativity);
   }
 
-  private static String formatRelative(final double v, final boolean relative) {
-    if (relative) {
-      return "~" + (v != 0 ? (v == Math.floor(v) ? (long) v : v) : "");
+  private static String formatRelativePosition(final double v, final Relativity relativity) {
+    if (relativity.isRelative()) {
+      return relativity.getSymbol() + (v != 0 ? (v == Math.floor(v) ? (long) v : v) : "");
     }
     return "" + v;
   }
@@ -176,21 +177,42 @@ public class Position implements Comparable<Position> {
    * Return true if the x component is relative, false otherwise.
    */
   public boolean isXRelative() {
-    return this.xRelative;
+    return this.xRelativity.isRelative();
   }
 
   /**
    * Return true if the y component is relative, false otherwise.
    */
   public boolean isYRelative() {
-    return this.yRelative;
+    return this.yRelativity.isRelative();
   }
 
   /**
    * Return true if the z component is relative, false otherwise.
    */
   public boolean isZRelative() {
-    return this.zRelative;
+    return this.zRelativity.isRelative();
+  }
+
+  /**
+   * Return the relativity of the x component.
+   */
+  public Relativity getXRelativity() {
+    return this.xRelativity;
+  }
+
+  /**
+   * Return the relativity of the y component.
+   */
+  public Relativity getYRelativity() {
+    return this.yRelativity;
+  }
+
+  /**
+   * Return the relativity of the z component.
+   */
+  public Relativity getZRelativity() {
+    return this.zRelativity;
   }
 
   /**
@@ -203,7 +225,7 @@ public class Position implements Comparable<Position> {
    */
   public Position add(final double x, final double y, final double z) {
     return new Position(this.x + x, this.y + y, this.z + z,
-        this.xRelative, this.yRelative, this.zRelative);
+        this.xRelativity, this.yRelativity, this.zRelativity);
   }
 
   /**
@@ -314,7 +336,7 @@ public class Position implements Comparable<Position> {
    */
   public Position multiply(final double n) {
     return new Position(this.x * n, this.y * n, this.z * n,
-        this.xRelative, this.yRelative, this.zRelative);
+        this.xRelativity, this.yRelativity, this.zRelativity);
   }
 
   /**
@@ -325,7 +347,7 @@ public class Position implements Comparable<Position> {
    */
   public Position divide(final double n) {
     return new Position(this.x / n, this.y / n, this.z / n,
-        this.xRelative, this.yRelative, this.zRelative);
+        this.xRelativity, this.yRelativity, this.zRelativity);
   }
 
   /**
@@ -336,7 +358,7 @@ public class Position implements Comparable<Position> {
    */
   public Position intDivide(final double n) {
     return new Position((int) (this.x / n), (int) (this.y / n), (int) (this.z / n),
-        this.xRelative, this.yRelative, this.zRelative);
+        this.xRelativity, this.yRelativity, this.zRelativity);
   }
 
   /**
@@ -347,7 +369,7 @@ public class Position implements Comparable<Position> {
    */
   public Position modulo(final double n) {
     return new Position(Utils.trueModulo(this.x, n), Utils.trueModulo(this.y, n), Utils.trueModulo(this.z, n),
-        this.xRelative, this.yRelative, this.zRelative);
+        this.xRelativity, this.yRelativity, this.zRelativity);
   }
 
   /**
@@ -358,7 +380,7 @@ public class Position implements Comparable<Position> {
    */
   public Position pow(final double n) {
     return new Position(Math.pow(this.x, n), Math.pow(this.y, n), Math.pow(this.z, n),
-        this.xRelative, this.yRelative, this.zRelative);
+        this.xRelativity, this.yRelativity, this.zRelativity);
   }
 
   /**
@@ -432,7 +454,7 @@ public class Position implements Comparable<Position> {
         this.x + facing.getStepX() * n,
         this.y + facing.getStepY() * n,
         this.z + facing.getStepZ() * n,
-        this.xRelative, this.yRelative, this.zRelative
+        this.xRelativity, this.yRelativity, this.zRelativity
     );
   }
 
@@ -444,10 +466,10 @@ public class Position implements Comparable<Position> {
    */
   public Position rotate(final Rotation rotation) {
     return switch (rotation) {
-      default -> new Position(this);
-      case CLOCKWISE_90 -> new Position(-this.z, this.y, this.x, this.zRelative, this.yRelative, this.xRelative);
+      case NONE -> new Position(this);
+      case CLOCKWISE_90 -> new Position(-this.z, this.y, this.x, this.zRelativity, this.yRelativity, this.xRelativity);
       case CLOCKWISE_180 -> new Position(-this.x, this.y, -this.z);
-      case COUNTERCLOCKWISE_90 -> new Position(this.z, this.y, -this.x, this.zRelative, this.yRelative, this.xRelative);
+      case COUNTERCLOCKWISE_90 -> new Position(this.z, this.y, -this.x, this.zRelativity, this.yRelativity, this.xRelativity);
     };
   }
 
@@ -481,7 +503,7 @@ public class Position implements Comparable<Position> {
    * @throws IllegalStateException If this position has at least one relative component.
    */
   public BlockPos toBlockPos() {
-    if (this.xRelative || this.yRelative || this.zRelative) {
+    if (this.isXRelative() || this.isYRelative() || this.isZRelative()) {
       throw new IllegalStateException("cannot convert relative positon to block position");
     }
     return new BlockPos(this.x, this.y, this.z);
@@ -507,12 +529,12 @@ public class Position implements Comparable<Position> {
     }
     Position that = (Position) o;
     return Double.compare(that.x, this.x) == 0 && Double.compare(that.y, this.y) == 0 && Double.compare(that.z, this.z) == 0
-        && this.xRelative == that.xRelative && this.yRelative == that.yRelative && this.zRelative == that.zRelative;
+        && this.xRelativity == that.xRelativity && this.yRelativity == that.yRelativity && this.zRelativity == that.zRelativity;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.x, this.y, this.z, this.xRelative, this.yRelative, this.zRelative);
+    return Objects.hash(this.x, this.y, this.z, this.xRelativity, this.yRelativity, this.zRelativity);
   }
 
   @Override
@@ -528,6 +550,44 @@ public class Position implements Comparable<Position> {
 
   @Override
   public String toString() {
-    return String.format("(%s, %s, %s)", this.getXCommandRepresentation(), this.getYCommandRepresentation(), this.getZCommandRepresentation());
+    return "(%s, %s, %s)"
+        .formatted(this.getXCommandRepresentation(), this.getYCommandRepresentation(), this.getZCommandRepresentation());
+  }
+
+  public enum Relativity {
+    ABSOLUTE(""), TILDE("~"), CARET("^");
+
+    private final String symbol;
+
+    Relativity(final String symbol) {
+      this.symbol = symbol;
+    }
+
+    public boolean isRelative() {
+      return this != ABSOLUTE;
+    }
+
+    public String getSymbol() {
+      return this.symbol;
+    }
+
+    @Override
+    public String toString() {
+      return this.symbol;
+    }
+
+    /**
+     * Return the relativity object that corresponds to the given string.
+     */
+    public static Relativity fromString(final String s) {
+      if (s == null) {
+        return ABSOLUTE;
+      }
+      return switch (s) {
+        case "~" -> TILDE;
+        case "^" -> CARET;
+        default -> ABSOLUTE;
+      };
+    }
   }
 }
