@@ -12,7 +12,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 /**
  * Wrapper type for {@link Block} class.
  * <p>
- * New instances can be created by casting {@link String}s or {@link ResourceLocation}s.
+ * New instances can be created by casting {@link String}s.
  */
 @Type(name = BlockType.NAME, doc = "Type that represents a block.")
 public class BlockType extends TypeBase<Block> {
@@ -26,8 +26,9 @@ public class BlockType extends TypeBase<Block> {
   }
 
   @Property(name = "id", doc = "The ID of a block.")
-  public ResourceLocation getID(final Block self) {
-    return self.getRegistryName();
+  public String getID(final Block self) {
+    //noinspection ConstantConditions
+    return self.getRegistryName().toString();
   }
 
   @Override
@@ -56,8 +57,6 @@ public class BlockType extends TypeBase<Block> {
   public Block explicitCast(final Scope scope, final Object o) throws MCCodeRuntimeException {
     if (o instanceof String s) {
       return ForgeRegistries.BLOCKS.getValue(new ResourceLocation(s));
-    } else if (o instanceof ResourceLocation r) {
-      return ForgeRegistries.BLOCKS.getValue(r);
     }
     return super.explicitCast(scope, o);
   }
@@ -65,7 +64,7 @@ public class BlockType extends TypeBase<Block> {
   @Override
   public CompoundTag _writeToNBT(final Block self) {
     CompoundTag tag = super._writeToNBT(self);
-    tag.putString(ID_KEY, this.getID(self).toString());
+    tag.putString(ID_KEY, this.getID(self));
     return tag;
   }
 

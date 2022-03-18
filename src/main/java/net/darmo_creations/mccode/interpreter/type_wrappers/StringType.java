@@ -9,7 +9,6 @@ import net.darmo_creations.mccode.interpreter.annotations.Type;
 import net.darmo_creations.mccode.interpreter.exceptions.IndexOutOfBoundsException;
 import net.darmo_creations.mccode.interpreter.types.MCList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -224,8 +223,6 @@ public class StringType extends TypeBase<String> {
   protected Object __eq__(final Scope scope, final String self, final Object o) {
     if (o instanceof String s) {
       return self.equals(s);
-    } else if (o instanceof ResourceLocation r) {
-      return self.equals(r.toString());
     }
     return false;
   }

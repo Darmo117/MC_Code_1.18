@@ -83,7 +83,6 @@
       <item>to_map</item>
       <item>to_pos</item>
       <item>to_relative_pos</item>
-      <item>to_resource_location</item>
       <item>to_set</item>
       <item>to_string</item>
 

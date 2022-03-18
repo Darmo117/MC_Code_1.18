@@ -14,7 +14,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 /**
  * Wrapper type for {@link Item} class.
  * <p>
- * Implements __eq__ operator. Can explicitly cast {@link String}s, {@link ResourceLocation}s and {@link Block}s.
+ * Implements __eq__ operator. Can explicitly cast {@link String}s and {@link Block}s.
  */
 @Type(name = ItemType.NAME, doc = "Type that represents an item.")
 public class ItemType extends TypeBase<Item> {
@@ -28,8 +28,9 @@ public class ItemType extends TypeBase<Item> {
   }
 
   @Property(name = "id", doc = "The ID of an item.")
-  public ResourceLocation getID(final Item self) {
-    return self.getRegistryName();
+  public String getID(final Item self) {
+    //noinspection ConstantConditions
+    return self.getRegistryName().toString();
   }
 
   @Property(name = "max_stack_size", doc = "The max stack size of an item.")
@@ -64,8 +65,6 @@ public class ItemType extends TypeBase<Item> {
   public Item explicitCast(final Scope scope, final Object o) throws MCCodeRuntimeException {
     if (o instanceof String s) {
       return ForgeRegistries.ITEMS.getValue(new ResourceLocation(s));
-    } else if (o instanceof ResourceLocation r) {
-      return ForgeRegistries.ITEMS.getValue(r);
     } else if (o instanceof Block b) {
       Item itemBlock = Item.BY_BLOCK.get(b);
       if (itemBlock == Items.AIR) {
@@ -79,7 +78,7 @@ public class ItemType extends TypeBase<Item> {
   @Override
   public CompoundTag _writeToNBT(final Item self) {
     CompoundTag tag = super._writeToNBT(self);
-    tag.putString(ID_KEY, this.getID(self).toString());
+    tag.putString(ID_KEY, this.getID(self));
     return tag;
   }
 

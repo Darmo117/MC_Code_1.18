@@ -477,13 +477,13 @@ public class ProgramManager implements NBTDeserializable {
    * Declare all default builtin types.
    */
   public static void declareDefaultBuiltinTypes() {
+    // TODO load through reflection
     declareType(AnyType.class);
     declareType(NullType.class);
     declareType(BooleanType.class);
     declareType(IntType.class);
     declareType(FloatType.class);
     declareType(StringType.class);
-    declareType(ResourceLocationType.class);
     declareType(PosType.class);
     declareType(ListType.class);
     declareType(SetType.class);
