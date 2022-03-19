@@ -96,7 +96,7 @@ public class ListType extends TypeBase<MCList> {
       parametersMetadata = {
           @ParameterMeta(name = "value", mayBeNull = true, doc = "The value to get the index of.")
       },
-      returnTypeMetadata = @ReturnMeta(doc = "The number index of the first occurence or -1 if the value was not found."),
+      returnTypeMetadata = @ReturnMeta(doc = "The index of the first occurence or -1 if the value was not found."),
       doc = "Returns the index of the first occurence of the given value in a list." +
           " Returns -1 if the value is not present in the list.")
   public Long indexOf(final Scope scope, final MCList self, final Object value) {

@@ -248,7 +248,8 @@ public class WorldType extends TypeBase<WorldProxy> {
   @Method(name = "revoke_advancement",
       parametersMetadata = {
           @ParameterMeta(name = "targets", doc = "An entity selector that targets players."),
-          @ParameterMeta(name = "advancement", doc = "The advancement to revoke.")
+          @ParameterMeta(name = "advancement", doc = "The advancement to revoke."),
+          @ParameterMeta(name = "criterion", mayBeNull = true, doc = "An optional criterion for the advancement.")
       },
       returnTypeMetadata = @ReturnMeta(mayBeNull = true,
           doc = "The number of advancements revoked from all targetted players or null if the action failed."),
@@ -1652,6 +1653,9 @@ public class WorldType extends TypeBase<WorldProxy> {
 
   // TEST
   @Method(name = "is_chunk_force_loaded",
+      parametersMetadata = {
+          @ParameterMeta(name = "pos", doc = "Position of the chunk to test.")
+      },
       returnTypeMetadata = @ReturnMeta(doc = "True if the chunk is force loaded, false otherwise."),
       doc = "Checks whether the chunk at the given position is force loaded.")
   public Boolean isChunkForceLoaded(final Scope scope, WorldProxy self, final Position position) {
@@ -2133,17 +2137,17 @@ public class WorldType extends TypeBase<WorldProxy> {
           @ParameterMeta(name = "speed", doc = "Speed of the particles. May be ignored by some particles."),
           @ParameterMeta(name = "count", doc = """
               Number of particles to spawn each tick.
-              Exception 1: When §oname§r is "entity_effect" or "ambient_entity_effect", a §ocount§r of 0 causes the\
+              §lException 1§r: When §oname§r is "entity_effect" or "ambient_entity_effect", a §ocount§r of 0 causes the\
                §odelta§r and §ospeed§r parameters to act like RGBE values instead, ranging from 0.0 to 1.0. The three\
                §odelta§r parameters give red, green, and blue components for the color; the §ospeed§r provides an\
                exponent that makes the colors brighter or dimmer, with 128 being the default.
-              Exception 2: When §oname§r is "note", a §ocount§r of 0 causes the value of §odelta_x§r to specify the\
+              §lException 2§r: When §oname§r is "note", a §ocount§r of 0 causes the value of §odelta_x§r to specify the\
                note’s color, ranging from 0.0 to 1.0. The values of 0.0 and 1.0 produce green particles, and the\
                values in between produce colors according to the note blocks table.
-              Exception 3: For all other particles, when §ocount§r is set to 0, the §odelta§r parameters instead act\
+              §lException 3§r: For all other particles, when §ocount§r is set to 0, the §odelta§r parameters instead act\
                as motion values for the particle, with §ospeed§r acting as a multiplier. Particles that don’t have\
                any motion to begin with are not affected by this (e.g.: "barrier").
-              """), // TODO fix indent of text block
+              """),
           @ParameterMeta(name = "force", doc = "If true the particles will be visible from up to 512 blocks away, " +
               "otherwise they will only be visible from up to 32 blocks away."),
           @ParameterMeta(name = "viewers", doc = "An entity selector that targerts all players that should see the particles."),
