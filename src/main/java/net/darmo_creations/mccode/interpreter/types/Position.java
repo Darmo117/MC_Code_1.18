@@ -550,8 +550,7 @@ public class Position implements Comparable<Position> {
 
   @Override
   public String toString() {
-    return "(%s, %s, %s)"
-        .formatted(this.getXCommandRepresentation(), this.getYCommandRepresentation(), this.getZCommandRepresentation());
+    return "%s %s %s".formatted(this.getXCommandRepresentation(), this.getYCommandRepresentation(), this.getZCommandRepresentation());
   }
 
   public enum Relativity {

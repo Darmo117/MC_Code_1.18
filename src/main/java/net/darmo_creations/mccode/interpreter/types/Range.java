@@ -52,7 +52,7 @@ public class Range implements Iterable<Long>, Cloneable {
 
   @Override
   public Iterator<Long> iterator() {
-    return new Iterator<Long>() {
+    return new Iterator<>() {
       private long i = Range.this.start;
 
       @Override
