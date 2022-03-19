@@ -17,7 +17,9 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.storage.LevelResource;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
 import java.io.*;
@@ -66,7 +68,7 @@ public class ProgramManager implements NBTDeserializable {
     this.runningPrograms = new HashMap<>();
     this.lastTick = -1;
     this.world = world;
-    this.dataDir = new File(world.getServer().getWorldPath(LevelResource.LEVEL_DATA_FILE).toFile().getAbsolutePath(), "data");
+    this.dataDir = new File(world.getServer().getWorldPath(LevelResource.LEVEL_DATA_FILE).getParent().toFile().getAbsolutePath(), "data");
     this.programsDir = new File(this.dataDir, "mccode_programs");
     this.loadFromFile();
   }
@@ -75,9 +77,10 @@ public class ProgramManager implements NBTDeserializable {
    * Return the dimension-specific save file path.
    */
   private File getSaveFile() {
+    String dimension = this.world.dimension().getRegistryName().toString().replace(":", "_");
     return new File(
         this.dataDir,
-        String.format("%s_program_manager_%s.dat", MCCode.MOD_ID, this.world.dimension().getRegistryName())
+        String.format("%s_program_manager-%s.dat", MCCode.MOD_ID, dimension)
     );
   }
 
@@ -658,7 +661,7 @@ public class ProgramManager implements NBTDeserializable {
             type.getName(), propertyName));
       }
 
-      String doc = "Type: " + formatTypeDoc(returnType.getName(), nullable);
+      String doc = "§nType§r: " + formatTypeDoc(returnType.getName(), nullable);
       if (docString.length() != 0) {
         doc = docString + "\n" + doc;
       }
@@ -710,9 +713,10 @@ public class ProgramManager implements NBTDeserializable {
           throw new TypeException(String.format("second argument of method must be of same type as wrapped type for method %s.%s: expected %s, got %s",
               typeName, methodName, wrappedType, parameterTypes[1]));
         }
-        if (parameterTypes.length != paramsMetadata.length) {
+        int expectedArgsNumber = parameterTypes.length - 2;
+        if (expectedArgsNumber != paramsMetadata.length) {
           throw new TypeException(String.format("invalid number of parameter metadata elements for method %s.%s: expected %d, got %d",
-              typeName, methodName, parameterTypes.length, paramsMetadata.length));
+              typeName, methodName, expectedArgsNumber, paramsMetadata.length));
         }
 
         List<? extends TypeBase<?>> paramsTypes = Arrays.stream(parameterTypes)
@@ -753,54 +757,23 @@ public class ProgramManager implements NBTDeserializable {
                                           final net.darmo_creations.mccode.interpreter.annotations.Method methodAnnotation,
                                           final List<? extends TypeBase<?>> paramsTypes,
                                           final TypeBase<?> returnType) {
-    ReturnMeta returnMetadata = methodAnnotation.returnTypeMetadata();
+    String fname = "%s%s§r.§l%s§r".formatted(DOC_TYPE_FORMAT, typeName, methodAnnotation.name());
     ParameterMeta[] paramsMetadata = methodAnnotation.parametersMetadata();
-    StringBuilder signatureParams = new StringBuilder();
-
-    for (int i = 0; i < paramsTypes.size(); i++) {
-      if (i > 0) {
-        signatureParams.append(", ");
-      }
-      signatureParams.append(formatTypeDoc(paramsTypes.get(i).getName(), paramsMetadata[i].mayBeNull()))
-          .append(' ')
-          .append(paramsMetadata[i].name());
-    }
-    String methodName = methodAnnotation.name();
-    StringBuilder doc = new StringBuilder("§nSignature§r: ")
-        .append(String.format("%s.%s(%s) -> %s", typeName, methodName, signatureParams,
-            formatTypeDoc(returnType.getName(), returnMetadata.mayBeNull())));
-
-    // Method
-    String methodDoc = methodAnnotation.doc().trim();
-    if (methodDoc.length() != 0) {
-      doc.insert(0, methodDoc + "\n");
-    }
-
-    Set<String> paramsNames = new HashSet<>();
-    // Parameters
+    List<Pair<Parameter, String>> paramsMeta = new ArrayList<>();
     for (int i = 0; i < paramsMetadata.length; i++) {
-      ParameterMeta meta = paramsMetadata[i];
-      String paramName = meta.name();
-      if (!ProgramParser.IDENTIFIER_PATTERN.asPredicate().test(paramName)) {
-        throw new TypeException(String.format("invalid name \"%s\" for parameter %d in method %s.%s", paramName, i, typeName, methodName));
-      }
-      if (paramsNames.contains(paramName)) {
-        throw new TypeException(String.format("duplicate parameter name \"%s\" for method %s.%s", paramName, typeName, methodName));
-      }
-      paramsNames.add(paramName);
-      String paramDoc = meta.doc().trim();
-      if (paramDoc.length() != 0) {
-        doc.append(paramName).append(':').append(' ').append(paramDoc).append('\n');
-      }
+      ParameterMeta paramMeta = paramsMetadata[i];
+      paramsMeta.add(new ImmutablePair<>(new Parameter(paramMeta.name(), paramsTypes.get(i), paramMeta.mayBeNull()), paramMeta.doc()));
     }
+    ReturnMeta returnMeta = methodAnnotation.returnTypeMetadata();
 
-    // Return type
-    String returnDoc = returnMetadata.doc().trim();
-    if (returnDoc.length() != 0) {
-      doc.append("Returns: ").append(returnDoc);
-    }
-
-    return doc.toString().trim();
+    return generateFunctionDoc(
+        fname,
+        methodAnnotation.doc().trim(),
+        paramsMeta,
+        returnMeta.doc().trim(),
+        returnType.getName(),
+        returnMeta.mayBeNull()
+    );
   }
 
   /**
@@ -861,6 +834,7 @@ public class ProgramManager implements NBTDeserializable {
     // Generate cast operators for relevant types
     for (TypeBase<?> type : TYPES.values()) {
       if (type.generateCastOperator()) {
+        // TODO generate doc
         String name = "to_" + type.getName();
         FUNCTIONS.put(name, new BuiltinFunction(name, type, false, new Parameter("o", ProgramManager.getTypeInstance(AnyType.class))) {
           @Override
@@ -910,43 +884,71 @@ public class ProgramManager implements NBTDeserializable {
    * @param functionAnnotation The function’s annotation.
    */
   private static void setBuiltinFunctionDoc(BuiltinFunction function, final Function functionAnnotation) {
-    StringBuilder paramsDoc = new StringBuilder();
+    List<Pair<Parameter, String>> paramsMeta = new ArrayList<>();
     List<Parameter> parameters = function.getParameters();
     for (int i = 0; i < parameters.size(); i++) {
-      if (i > 0) {
-        paramsDoc.append(',').append(' ');
-      }
-      paramsDoc.append(formatTypeDoc(parameters.get(i).getType().getName(), parameters.get(i).isNullable()))
-          .append(' ')
-          .append(parameters.get(i).getName());
+      paramsMeta.add(new ImmutablePair<>(parameters.get(i), functionAnnotation.parametersDoc()[i]));
     }
 
-    StringBuilder doc = new StringBuilder("§nSignature§r: ");
-    doc.append(String.format("%s(%s) -> %s", function.getName(), paramsDoc,
-        formatTypeDoc(function.getReturnType().getName(), function.mayReturnNull())));
+    String doc = generateFunctionDoc(
+        "§l%s§r".formatted(function.getName()),
+        functionAnnotation.doc().trim(),
+        paramsMeta,
+        functionAnnotation.returnDoc().trim(),
+        function.getReturnType().getName(),
+        function.mayReturnNull()
+    );
+
+    setPrivateField(BuiltinFunction.class, function, "doc", doc);
+  }
+
+  private static String generateFunctionDoc(final String functionName, final String baseDoc,
+                                            final List<Pair<Parameter, String>> paramsMeta,
+                                            final String returnDoc, final String returnType, final boolean returnNullable) {
+    StringBuilder paramsDoc = new StringBuilder();
+    for (int i = 0; i < paramsMeta.size(); i++) {
+      if (i > 0) {
+        paramsDoc.append(", ");
+      }
+      Parameter param = paramsMeta.get(i).getLeft();
+      paramsDoc.append(formatTypeDoc(param.getType().getName(), param.isNullable()))
+          .append(' ')
+          .append(DOC_PARAM_FORMAT)
+          .append(param.getName())
+          .append("§r");
+    }
+
+    StringBuilder doc = new StringBuilder("§nSignature§r: ")
+        .append(functionName)
+        .append('(')
+        .append(paramsDoc)
+        .append(')')
+        .append(" -> ")
+        .append(formatTypeDoc(returnType, returnNullable));
 
     // Function
-    String functionDoc = functionAnnotation.doc().trim();
-    if (functionDoc.length() != 0) {
-      doc.insert(0, functionDoc + "\n");
+    if (baseDoc.length() != 0) {
+      doc.insert(0, baseDoc + "\n");
     }
 
     // Parameters
-    for (int i = 0; i < parameters.size(); i++) {
-      Parameter parameter = parameters.get(i);
-      String paramDoc = functionAnnotation.parametersDoc()[i].trim();
-      if (paramDoc.length() != 0) {
-        doc.append(parameter.getName()).append(':').append(' ').append(paramDoc).append('\n');
+    if (!paramsMeta.isEmpty()) {
+      doc.append("\n§nParameters§r:\n");
+      for (Pair<Parameter, String> parameter : paramsMeta) {
+        Parameter paramMeta = parameter.getLeft();
+        String paramDoc = parameter.getRight().trim();
+        doc.append(DOC_PARAM_FORMAT).append(paramMeta.getName()).append("§r").append(": ").append(paramDoc).append('\n');
       }
+    } else {
+      doc.append('\n');
     }
 
     // Return type
-    String returnDoc = functionAnnotation.returnDoc().trim();
     if (returnDoc.length() != 0) {
-      doc.append("Returns: ").append(returnDoc);
+      doc.append("§nReturns§r: ").append(returnDoc);
     }
 
-    setPrivateField(BuiltinFunction.class, function, "doc", doc.toString().trim());
+    return doc.toString().trim();
   }
 
   /**
@@ -957,8 +959,12 @@ public class ProgramManager implements NBTDeserializable {
    * @return The type name with a question mark appended at the end if nullable is true; only the type name otherwise.
    */
   private static String formatTypeDoc(final String typeName, final boolean nullable) {
-    return typeName + (nullable ? "?" : "");
+    return DOC_TYPE_FORMAT + typeName + "§r" + (nullable ? DOC_OPERATOR_FORMAT + "?§r" : "");
   }
+
+  public static final String DOC_PARAM_FORMAT = "§" + ChatFormatting.ITALIC.getChar();
+  public static final String DOC_TYPE_FORMAT = "§" + ChatFormatting.AQUA.getChar();
+  public static final String DOC_OPERATOR_FORMAT = "§" + ChatFormatting.DARK_RED.getChar();
 
   private static <C, I extends C> void setPrivateField(final Class<C> class_, I instance, final String fieldName, final Object fieldValue) {
     try {
