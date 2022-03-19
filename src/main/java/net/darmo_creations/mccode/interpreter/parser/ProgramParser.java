@@ -32,7 +32,7 @@ public final class ProgramParser {
    * @return The program instance.
    * @throws SyntaxErrorException If a syntax error is encountered.
    */
-  public static Program parse(final ProgramManager programManager, final String programName, final String script, boolean asModule, final Object... args)
+  public static Program parse(final ProgramManager programManager, final String programName, final String script, boolean asModule, final String... args)
       throws SyntaxErrorException {
     MCCodeLexer lexer = new MCCodeLexer(CharStreams.fromString(script));
     MCCodeParser parser = new MCCodeParser(new CommonTokenStream(lexer));

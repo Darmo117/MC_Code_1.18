@@ -1,7 +1,6 @@
 package net.darmo_creations.mccode.interpreter;
 
 import net.darmo_creations.mccode.interpreter.exceptions.EvaluationException;
-import net.darmo_creations.mccode.interpreter.exceptions.MCCodeException;
 import net.darmo_creations.mccode.interpreter.exceptions.MCCodeRuntimeException;
 import net.darmo_creations.mccode.interpreter.exceptions.SyntaxErrorException;
 import net.darmo_creations.mccode.interpreter.statements.Statement;
@@ -11,6 +10,7 @@ import net.darmo_creations.mccode.interpreter.statements.WaitStatement;
 import net.darmo_creations.mccode.interpreter.types.WorldProxy;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 
 import java.util.*;
@@ -34,8 +34,6 @@ public class Program {
   public static final String IP_KEY = "IP";
   public static final String IS_MODULE_KEY = "IsModule";
   public static final String ARGS_KEY = "CommandArgs";
-  public static final String ARG_TYPE_KEY = "Type";
-  public static final String ARG_VALUE_KEY = "Value";
 
   private final String name;
   private final List<Statement> statements;
@@ -51,7 +49,7 @@ public class Program {
   private int ip;
   private final Random rng = new Random();
 
-  private final List<Object> args;
+  private final List<String> args;
 
   /**
    * Create a new program.
@@ -65,7 +63,7 @@ public class Program {
    * @throws MCCodeRuntimeException If the schedule delay or repeat amount is negative,
    *                                or a repeat amount is defined without a schedule delay.
    */
-  public Program(final String name, final List<Statement> statements, final Long scheduleDelay, final Long repeatAmount, ProgramManager programManager, Object... args) {
+  public Program(final String name, final List<Statement> statements, final Long scheduleDelay, final Long repeatAmount, ProgramManager programManager, String... args) {
     this.programManager = Objects.requireNonNull(programManager);
     this.name = Objects.requireNonNull(name);
     this.statements = Objects.requireNonNull(statements);
@@ -134,15 +132,8 @@ public class Program {
     }
     this.ip = tag.getInt(IP_KEY);
     this.args = new ArrayList<>();
-    for (Tag Tag : tag.getList(ARGS_KEY, Tag.TAG_COMPOUND)) {
-      CompoundTag t = (CompoundTag) Tag;
-      String argType = t.getString(ARG_TYPE_KEY);
-      switch (argType) {
-        case "int" -> this.args.add(t.getLong(ARG_VALUE_KEY));
-        case "float" -> this.args.add(t.getDouble(ARG_VALUE_KEY));
-        case "boolean" -> this.args.add(t.getBoolean(ARG_VALUE_KEY));
-        default -> throw new MCCodeException("invalid arg type " + argType);
-      }
+    for (Tag t : tag.getList(ARGS_KEY, Tag.TAG_STRING)) {
+      this.args.add(t.getAsString());
     }
     this.setup();
   }
@@ -275,13 +266,6 @@ public class Program {
   }
 
   /**
-   * Return the remaining time to wait for this program.
-   */
-  public long getWaitTime() {
-    return this.timeToWait;
-  }
-
-  /**
    * Set the wait time of this program.
    *
    * @param scope Scope this instruction is called from.
@@ -315,20 +299,7 @@ public class Program {
     tag.putInt(IP_KEY, this.ip);
     tag.putBoolean(IS_MODULE_KEY, this.isModule);
     ListTag argsList = new ListTag();
-    for (Object arg : this.args) {
-      CompoundTag t = new CompoundTag();
-      if (arg instanceof Long l) {
-        t.putString(ARG_TYPE_KEY, "int");
-        t.putLong(ARG_VALUE_KEY, l);
-      } else if (arg instanceof Double d) {
-        t.putString(ARG_TYPE_KEY, "float");
-        t.putDouble(ARG_VALUE_KEY, d);
-      } else if (arg instanceof Boolean b) {
-        t.putString(ARG_TYPE_KEY, "boolean");
-        t.putBoolean(ARG_VALUE_KEY, b);
-      }
-      argsList.add(t);
-    }
+    this.args.stream().map(StringTag::valueOf).forEach(argsList::add);
     tag.put(ARGS_KEY, argsList);
     return tag;
   }

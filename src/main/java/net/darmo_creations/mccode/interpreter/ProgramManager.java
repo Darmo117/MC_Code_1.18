@@ -201,7 +201,7 @@ public class ProgramManager implements NBTDeserializable {
    * @throws SyntaxErrorException         If a syntax error is present in the program’s source file.
    * @throws ProgramFileNotFoundException If no .mccode file was found for the given name.
    */
-  public Program loadProgram(final String name, final String alias, final boolean asModule, Object... args)
+  public Program loadProgram(final String name, final String alias, final boolean asModule, String... args)
       throws SyntaxErrorException, ProgramFileNotFoundException {
     String actualName = alias != null ? alias : name;
     if (!asModule && this.programs.containsKey(actualName)) {

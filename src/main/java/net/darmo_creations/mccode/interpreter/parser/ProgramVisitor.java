@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class ProgramVisitor extends MCCodeBaseVisitor<Program> {
   private final ProgramManager programManager;
   private final String programName;
-  private final Object[] args;
+  private final String[] args;
   private final boolean asModule;
 
   /**
@@ -30,7 +30,7 @@ public class ProgramVisitor extends MCCodeBaseVisitor<Program> {
    * @param asModule       Whether the program should be parsed as a module.
    * @param args           Optional command arguments for the program.
    */
-  public ProgramVisitor(final ProgramManager programManager, final String programName, boolean asModule, final Object... args) {
+  public ProgramVisitor(final ProgramManager programManager, final String programName, boolean asModule, final String... args) {
     this.programManager = programManager;
     this.asModule = asModule;
     this.programName = programName;
