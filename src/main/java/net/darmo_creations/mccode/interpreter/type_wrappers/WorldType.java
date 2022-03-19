@@ -783,7 +783,391 @@ public class WorldType extends TypeBase<WorldProxy> {
    * /data command
    */
 
-  // TODO /data command
+  // TEST
+  @Method(name = "get_data",
+      parametersMetadata = {
+          @ParameterMeta(name = "target_type", doc = "Type of the target to get data from. One of \"block\", \"entity\" or \"storage\"."),
+          @ParameterMeta(name = "target", doc = "Depending on the value of the first argument, the block position, " +
+              "entity selector or storage resource location to get data from."),
+          @ParameterMeta(name = "target_nbt_path", mayBeNull = true, doc = "The path to the data to query. If null, all data is returned.")
+      },
+      returnTypeMetadata = @ReturnMeta(doc = "The queried data or null if an error occured."),
+      doc = "Returns NBT data from the specified target.")
+  public Object getData(final Scope scope, WorldProxy self, final String targetType, final Object target, final String targetNBTPath) {
+    // TODO
+    return null;
+  }
+
+  // TEST
+  @Method(name = "append_data_from",
+      parametersMetadata = {
+          @ParameterMeta(name = "target_type", doc = "Type of the target to modify. One of \"block\", \"entity\" or \"storage\"."),
+          @ParameterMeta(name = "target", doc = "Depending on the value of the first argument, the block position, " +
+              "entity selector or storage resource location to change the data of."),
+          @ParameterMeta(name = "target_nbt_path", doc = "The NBT path where to append the data."),
+          @ParameterMeta(name = "source_type", doc = "Type of the source to get data from. One of \"block\", \"entity\" or \"storage\"."),
+          @ParameterMeta(name = "source", doc = "Depending on the value of the previous argument, the block position, " +
+              "entity selector or storage resource location to get data from."),
+          @ParameterMeta(name = "source_nbt_path", mayBeNull = true, doc = "The NBT path where to get the data from. May be null.")
+      },
+      returnTypeMetadata = @ReturnMeta(mayBeNull = true,
+          doc = "The number of lists or arrays to which new elements are added or null if an error occured."),
+      doc = "Appends data from the given source to the end of the given target’s list.")
+  public Long appendDataFrom(final Scope scope, WorldProxy self,
+                             final String targetType, final Object target, final String targetNBTPath,
+                             final String sourceType, final Object source, final String sourceNBTPath) {
+    List<String> args = new ArrayList<>(List.of("modify"));
+    appendDataTarget(scope, targetType, target, args);
+    args.add(targetNBTPath);
+    args.add("append");
+    args.add("from");
+    appendDataTarget(scope, sourceType, source, args);
+    if (sourceNBTPath != null) {
+      args.add(sourceNBTPath);
+    }
+    return executeCommand(
+        self,
+        "data",
+        args.toArray(String[]::new)
+    ).orElse(null);
+  }
+
+  // TEST
+  @Method(name = "append_data",
+      parametersMetadata = {
+          @ParameterMeta(name = "target_type", doc = "Type of the target to modify. One of \"block\", \"entity\" or \"storage\"."),
+          @ParameterMeta(name = "target", doc = "Depending on the value of the first argument, the block position, " +
+              "entity selector or storage resource location to change the data of."),
+          @ParameterMeta(name = "target_nbt_path", doc = "The NBT path where to append the data."),
+          @ParameterMeta(name = "nbt", doc = "A string representing an NBT tag.")
+      },
+      returnTypeMetadata = @ReturnMeta(mayBeNull = true,
+          doc = "The number of lists or arrays to which new elements are added or null if an error occured."),
+      doc = "Appends data to the end of the given target’s list.")
+  public Long appendData(final Scope scope, WorldProxy self,
+                         final String targetType, final Object target, final String targetNBTPath,
+                         final String nbt) {
+    List<String> args = new ArrayList<>(List.of("modify"));
+    appendDataTarget(scope, targetType, target, args);
+    args.add(targetNBTPath);
+    args.add("append");
+    args.add("value");
+    args.add(nbt);
+    return executeCommand(
+        self,
+        "data",
+        args.toArray(String[]::new)
+    ).orElse(null);
+  }
+
+  // TEST
+  @Method(name = "prepend_data_from",
+      parametersMetadata = {
+          @ParameterMeta(name = "target_type", doc = "Type of the target to modify. One of \"block\", \"entity\" or \"storage\"."),
+          @ParameterMeta(name = "target", doc = "Depending on the value of the first argument, the block position, " +
+              "entity selector or storage resource location to change the data of."),
+          @ParameterMeta(name = "target_nbt_path", doc = "The NBT path where to prepend the data."),
+          @ParameterMeta(name = "source_type", doc = "Type of the source to get data from. One of \"block\", \"entity\" or \"storage\"."),
+          @ParameterMeta(name = "source", doc = "Depending on the value of the previous argument, the block position, " +
+              "entity selector or storage resource location to get data from."),
+          @ParameterMeta(name = "source_nbt_path", mayBeNull = true, doc = "The NBT path where to get the data from. May be null.")
+      },
+      returnTypeMetadata = @ReturnMeta(mayBeNull = true,
+          doc = "The number of lists or arrays to which new elements are added or null if an error occured."),
+      doc = "Prepends data from the given source to the start of the given target’s list.")
+  public Long prependDataFrom(final Scope scope, WorldProxy self,
+                              final String targetType, final Object target, final String targetNBTPath,
+                              final String sourceType, final Object source, final String sourceNBTPath) {
+    List<String> args = new ArrayList<>(List.of("modify"));
+    appendDataTarget(scope, targetType, target, args);
+    args.add(targetNBTPath);
+    args.add("prepend");
+    args.add("from");
+    appendDataTarget(scope, sourceType, source, args);
+    if (sourceNBTPath != null) {
+      args.add(sourceNBTPath);
+    }
+    return executeCommand(
+        self,
+        "data",
+        args.toArray(String[]::new)
+    ).orElse(null);
+  }
+
+  // TEST
+  @Method(name = "prepend_data",
+      parametersMetadata = {
+          @ParameterMeta(name = "target_type", doc = "Type of the target to modify. One of \"block\", \"entity\" or \"storage\"."),
+          @ParameterMeta(name = "target", doc = "Depending on the value of the first argument, the block position, " +
+              "entity selector or storage resource location to change the data of."),
+          @ParameterMeta(name = "target_nbt_path", doc = "The NBT path where to prepend the data."),
+          @ParameterMeta(name = "nbt", doc = "A string representing an NBT tag.")
+      },
+      returnTypeMetadata = @ReturnMeta(mayBeNull = true,
+          doc = "The number of lists or arrays to which new elements are added or null if an error occured."),
+      doc = "Prepends data to the start of the given target’s list.")
+  public Long prependData(final Scope scope, WorldProxy self,
+                          final String targetType, final Object target, final String targetNBTPath,
+                          final String nbt) {
+    List<String> args = new ArrayList<>(List.of("modify"));
+    appendDataTarget(scope, targetType, target, args);
+    args.add(targetNBTPath);
+    args.add("prepend");
+    args.add("value");
+    args.add(nbt);
+    return executeCommand(
+        self,
+        "data",
+        args.toArray(String[]::new)
+    ).orElse(null);
+  }
+
+  // TEST
+  @Method(name = "insert_data_from",
+      parametersMetadata = {
+          @ParameterMeta(name = "target_type", doc = "Type of the target to modify. One of \"block\", \"entity\" or \"storage\"."),
+          @ParameterMeta(name = "target", doc = "Depending on the value of the first argument, the block position, " +
+              "entity selector or storage resource location to change the data of."),
+          @ParameterMeta(name = "target_nbt_path", doc = "The NBT path where to insert the data."),
+          @ParameterMeta(name = "index", doc = "The index at which data should be inserted."),
+          @ParameterMeta(name = "source_type", doc = "Type of the source to get data from. One of \"block\", \"entity\" or \"storage\"."),
+          @ParameterMeta(name = "source", doc = "Depending on the value of the previous argument, the block position, " +
+              "entity selector or storage resource location to get data from."),
+          @ParameterMeta(name = "source_nbt_path", mayBeNull = true, doc = "The NBT path where to get the data from. May be null.")
+      },
+      returnTypeMetadata = @ReturnMeta(mayBeNull = true,
+          doc = "The number of lists or arrays to which new elements are added or null if an error occured."),
+      doc = "Inserts data from the given source to the specified index in the given target’s list.")
+  public Long insertDataFrom(final Scope scope, WorldProxy self,
+                             final String targetType, final Object target, final String targetNBTPath,
+                             final Long index,
+                             final String sourceType, final Object source, final String sourceNBTPath) {
+    List<String> args = new ArrayList<>(List.of("modify"));
+    appendDataTarget(scope, targetType, target, args);
+    args.add(targetNBTPath);
+    args.add("insert");
+    args.add(index.toString());
+    args.add("from");
+    appendDataTarget(scope, sourceType, source, args);
+    if (sourceNBTPath != null) {
+      args.add(sourceNBTPath);
+    }
+    return executeCommand(
+        self,
+        "data",
+        args.toArray(String[]::new)
+    ).orElse(null);
+  }
+
+  // TEST
+  @Method(name = "insert_data",
+      parametersMetadata = {
+          @ParameterMeta(name = "target_type", doc = "Type of the target to modify. One of \"block\", \"entity\" or \"storage\"."),
+          @ParameterMeta(name = "target", doc = "Depending on the value of the first argument, the block position, " +
+              "entity selector or storage resource location to change the data of."),
+          @ParameterMeta(name = "target_nbt_path", doc = "The NBT path where to insert the data."),
+          @ParameterMeta(name = "index", doc = "The index at which data should be inserted."),
+          @ParameterMeta(name = "nbt", doc = "A string representing an NBT tag.")
+      },
+      returnTypeMetadata = @ReturnMeta(mayBeNull = true,
+          doc = "The number of lists or arrays to which new elements are added or null if an error occured."),
+      doc = "Prepends data to the specified index in the given target’s list.")
+  public Long insertData(final Scope scope, WorldProxy self,
+                         final String targetType, final Object target, final String targetNBTPath,
+                         final Long index, final String nbt) {
+    List<String> args = new ArrayList<>(List.of("modify"));
+    appendDataTarget(scope, targetType, target, args);
+    args.add(targetNBTPath);
+    args.add("insert");
+    args.add(index.toString());
+    args.add("value");
+    args.add(nbt);
+    return executeCommand(
+        self,
+        "data",
+        args.toArray(String[]::new)
+    ).orElse(null);
+  }
+
+  // TEST
+  @Method(name = "merge_data_from",
+      parametersMetadata = {
+          @ParameterMeta(name = "target_type", doc = "Type of the target to modify. One of \"block\", \"entity\" or \"storage\"."),
+          @ParameterMeta(name = "target", doc = "Depending on the value of the first argument, the block position, " +
+              "entity selector or storage resource location to change the data of."),
+          @ParameterMeta(name = "target_nbt_path", doc = "The NBT path where to merge the data."),
+          @ParameterMeta(name = "source_type", doc = "Type of the source to get data from. One of \"block\", \"entity\" or \"storage\"."),
+          @ParameterMeta(name = "source", doc = "Depending on the value of the previous argument, the block position, " +
+              "entity selector or storage resource location to get data from."),
+          @ParameterMeta(name = "source_nbt_path", mayBeNull = true, doc = "The NBT path where to get the data from. May be null.")
+      },
+      returnTypeMetadata = @ReturnMeta(mayBeNull = true,
+          doc = "The number of target tags that were successfully modified or null if an error occured."),
+      doc = "Merges data from the given source into the given target’s object.")
+  public Long mergeDataFrom(final Scope scope, WorldProxy self,
+                            final String targetType, final Object target, final String targetNBTPath,
+                            final String sourceType, final Object source, final String sourceNBTPath) {
+    List<String> args = new ArrayList<>(List.of("modify"));
+    appendDataTarget(scope, targetType, target, args);
+    args.add(targetNBTPath);
+    args.add("merge");
+    args.add("from");
+    appendDataTarget(scope, sourceType, source, args);
+    if (sourceNBTPath != null) {
+      args.add(sourceNBTPath);
+    }
+    return executeCommand(
+        self,
+        "data",
+        args.toArray(String[]::new)
+    ).orElse(null);
+  }
+
+  // TEST
+  @Method(name = "merge_data",
+      parametersMetadata = {
+          @ParameterMeta(name = "target_type", doc = "Type of the target to modify. One of \"block\", \"entity\" or \"storage\"."),
+          @ParameterMeta(name = "target", doc = "Depending on the value of the first argument, the block position, " +
+              "entity selector or storage resource location to change the data of."),
+          @ParameterMeta(name = "target_nbt_path", doc = "The NBT path where to merge the data."),
+          @ParameterMeta(name = "nbt", doc = "A string representing an NBT tag.")
+      },
+      returnTypeMetadata = @ReturnMeta(mayBeNull = true,
+          doc = "The number of target tags that were successfully modified or null if an error occured."),
+      doc = "Merges data into the given target’s object.")
+  public Long mergeData(final Scope scope, WorldProxy self,
+                        final String targetType, final Object target, final String targetNBTPath,
+                        final String nbt) {
+    List<String> args = new ArrayList<>(List.of("modify"));
+    appendDataTarget(scope, targetType, target, args);
+    args.add(targetNBTPath);
+    args.add("merge");
+    args.add("value");
+    args.add(nbt);
+    return executeCommand(
+        self,
+        "data",
+        args.toArray(String[]::new)
+    ).orElse(null);
+  }
+
+  // TEST
+  @Method(name = "set_data_from",
+      parametersMetadata = {
+          @ParameterMeta(name = "target_type", doc = "Type of the target to modify. One of \"block\", \"entity\" or \"storage\"."),
+          @ParameterMeta(name = "target", doc = "Depending on the value of the first argument, the block position, " +
+              "entity selector or storage resource location to change the data of."),
+          @ParameterMeta(name = "target_nbt_path", doc = "The NBT path where to set the data."),
+          @ParameterMeta(name = "source_type", doc = "Type of the source to get data from. One of \"block\", \"entity\" or \"storage\"."),
+          @ParameterMeta(name = "source", doc = "Depending on the value of the previous argument, the block position, " +
+              "entity selector or storage resource location to get data from."),
+          @ParameterMeta(name = "source_nbt_path", mayBeNull = true, doc = "The NBT path where to get the data from. May be null.")
+      },
+      returnTypeMetadata = @ReturnMeta(mayBeNull = true,
+          doc = "The number of target tags that were successfully modified or null if an error occured."),
+      doc = "Sets the tag specified by §otarget_nbt_path§r to the source data.")
+  public Long setDataFrom(final Scope scope, WorldProxy self,
+                          final String targetType, final Object target, final String targetNBTPath,
+                          final String sourceType, final Object source, final String sourceNBTPath) {
+    List<String> args = new ArrayList<>(List.of("modify"));
+    appendDataTarget(scope, targetType, target, args);
+    args.add(targetNBTPath);
+    args.add("set");
+    args.add("from");
+    appendDataTarget(scope, sourceType, source, args);
+    if (sourceNBTPath != null) {
+      args.add(sourceNBTPath);
+    }
+    return executeCommand(
+        self,
+        "data",
+        args.toArray(String[]::new)
+    ).orElse(null);
+  }
+
+  // TEST
+  @Method(name = "set_data",
+      parametersMetadata = {
+          @ParameterMeta(name = "target_type", doc = "Type of the target to modify. One of \"block\", \"entity\" or \"storage\"."),
+          @ParameterMeta(name = "target", doc = "Depending on the value of the first argument, the block position, " +
+              "entity selector or storage resource location to change the data of."),
+          @ParameterMeta(name = "target_nbt_path", doc = "The NBT path where to set the data."),
+          @ParameterMeta(name = "nbt", doc = "A string representing an NBT tag.")
+      },
+      returnTypeMetadata = @ReturnMeta(mayBeNull = true,
+          doc = "The number of target tags that were successfully modified or null if an error occured."),
+      doc = "Sets the tag specified by §otarget_nbt_path§r to the specified value.")
+  public Long setData(final Scope scope, WorldProxy self,
+                      final String targetType, final Object target, final String targetNBTPath,
+                      final String nbt) {
+    List<String> args = new ArrayList<>(List.of("modify"));
+    appendDataTarget(scope, targetType, target, args);
+    args.add(targetNBTPath);
+    args.add("set");
+    args.add("value");
+    args.add(nbt);
+    return executeCommand(
+        self,
+        "data",
+        args.toArray(String[]::new)
+    ).orElse(null);
+  }
+
+  // TEST
+  @Method(name = "merge_nbt_data",
+      parametersMetadata = {
+          @ParameterMeta(name = "target_type", doc = "Type of the target to modify. One of \"block\", \"entity\" or \"storage\"."),
+          @ParameterMeta(name = "target", doc = "Depending on the value of the first argument, the block position, " +
+              "entity selector or storage resource location to change the data of."),
+          @ParameterMeta(name = "nbt", doc = "A string representing an NBT compound tag.")
+      },
+      returnTypeMetadata = @ReturnMeta(doc = "True if the action succeeded, false otherwise."),
+      doc = "Merges the given data with the specified target’s data.")
+  public Boolean mergeNBTData(final Scope scope, WorldProxy self,
+                              final String targetType, final Object target, final String nbt) {
+    List<String> args = new ArrayList<>(List.of("merge"));
+    appendDataTarget(scope, targetType, target, args);
+    args.add(nbt);
+    return executeCommand(
+        self,
+        "data",
+        args.toArray(String[]::new)
+    ).orElse(-1L) > 0;
+  }
+
+  // TEST
+  @Method(name = "remove_data",
+      parametersMetadata = {
+          @ParameterMeta(name = "target_type", doc = "Type of the target to modify. One of \"block\", \"entity\" or \"storage\"."),
+          @ParameterMeta(name = "target", doc = "Depending on the value of the first argument, the block position, " +
+              "entity selector or storage resource location to change the data of."),
+          @ParameterMeta(name = "target_nbt_path", doc = "The path to the data to be removed.")
+      },
+      returnTypeMetadata = @ReturnMeta(doc = "True if the action succeeded, false otherwise."),
+      doc = "Removes the data specified by §otarget_nbt_path§r from the specified target.")
+  public Boolean removeData(final Scope scope, WorldProxy self,
+                            final String targetType, final Object target, final String targetNBTPath) {
+    List<String> args = new ArrayList<>(List.of("remove"));
+    appendDataTarget(scope, targetType, target, args);
+    args.add(targetNBTPath);
+    return executeCommand(
+        self,
+        "data",
+        args.toArray(String[]::new)
+    ).orElse(-1L) > 0;
+  }
+
+  private static void appendDataTarget(final Scope scope, final String type, final Object source, List<String> args) {
+    args.add(type);
+    if ("block".equals(type)) {
+      BlockPos p = ProgramManager.getTypeInstance(PosType.class).implicitCast(scope, source).toBlockPos();
+      args.add("" + p.getX());
+      args.add("" + p.getY());
+      args.add("" + p.getZ());
+    } else {
+      args.add(source.toString());
+    }
+  }
 
   /*
    * /datapack command
@@ -1050,25 +1434,6 @@ public class WorldType extends TypeBase<WorldProxy> {
         "enchant",
         targetSelector, enchantment, level.toString()
     ).orElse(null);
-  }
-
-  /*
-   * /execute command
-   */
-
-  // TODO update
-  @Method(name = "execute_command")
-  public Boolean executeCommand(final Scope scope, WorldProxy self, final String targetSelector, final Position position,
-                                final String command) {
-    List<String> args = new ArrayList<>(Arrays.asList(
-        targetSelector, position.getXCommandRepresentation(), position.getYCommandRepresentation(), position.getZCommandRepresentation()
-    ));
-    args.addAll(Arrays.asList(command.split(" ")));
-    return executeCommand(
-        self,
-        "execute",
-        args.toArray(String[]::new)
-    ).orElse(-1L) > 0;
   }
 
   /*
@@ -3130,6 +3495,22 @@ public class WorldType extends TypeBase<WorldProxy> {
    * Other methods.
    */
 
+  @Method(name = "execute_command",
+      parametersMetadata = {
+          @ParameterMeta(name = "command", doc = "Name of the command to execute. The '/' character is optional."),
+          @ParameterMeta(name = "args", doc = "A list that contains the arguments of the command.")
+      },
+      returnTypeMetadata = @ReturnMeta(mayBeNull = true,
+          doc = "The result of the command or null if an error occured."),
+      doc = "Executes an arbitrary command. See the Minecraft wiki for more information.")
+  public Long executeCommand(final Scope scope, WorldProxy self, final String command, final MCList args) {
+    return executeCommand(
+        self,
+        command.charAt(0) == '/' ? command.substring(1) : command,
+        args.stream().map(o -> ProgramManager.getTypeForValue(o).toString(o)).toArray(String[]::new)
+    ).orElse(null);
+  }
+
   @Method(name = "entities_match",
       parametersMetadata = {
           @ParameterMeta(name = "targets", doc = "An entity selector.")
@@ -3240,6 +3621,13 @@ public class WorldType extends TypeBase<WorldProxy> {
    */
   private static String mapToBlockState(final MCMap map) {
     return "[" + map.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining(",")) + "]";
+  }
+
+  /**
+   * Convert a map to a compount NBT tag string.
+   */
+  private static String mapToNBTString(final MCMap map) {
+    return mapToDataTag(map);
   }
 
   /**
