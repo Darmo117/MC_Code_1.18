@@ -521,6 +521,9 @@ public class ProgramManager implements NBTDeserializable {
     String typeName = typeAnnotation.name();
     Class<?> wrappedType = type.getWrappedType();
 
+    if (!ProgramParser.IDENTIFIER_PATTERN.asPredicate().test(typeName)) {
+      throw new TypeException(String.format("invalid type name \"%s\" for type class %s", typeName, typeClass));
+    }
     if (TYPES.containsKey(typeName)) {
       throw new TypeException(String.format("a type with the name \"%s\" already exists", typeName));
     }

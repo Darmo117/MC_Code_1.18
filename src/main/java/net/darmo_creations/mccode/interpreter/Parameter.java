@@ -1,5 +1,7 @@
 package net.darmo_creations.mccode.interpreter;
 
+import net.darmo_creations.mccode.interpreter.exceptions.MCCodeException;
+import net.darmo_creations.mccode.interpreter.parser.ProgramParser;
 import net.darmo_creations.mccode.interpreter.type_wrappers.TypeBase;
 
 import java.util.Objects;
@@ -19,9 +21,7 @@ public class Parameter {
    * @param type Parameter’s type.
    */
   public Parameter(final String name, final TypeBase<?> type) {
-    this.name = name;
-    this.type = type;
-    this.nullable = false;
+    this(name, type, false);
   }
 
   /**
@@ -32,8 +32,11 @@ public class Parameter {
    * @param nullable Whether this parameter’s value may be null.
    */
   public Parameter(final String name, final TypeBase<?> type, final boolean nullable) {
+    if (!ProgramParser.IDENTIFIER_PATTERN.asPredicate().test(name)) {
+      throw new MCCodeException("invalid parameter name \"%s\"".formatted(name));
+    }
     this.name = name;
-    this.type = type;
+    this.type = Objects.requireNonNull(type);
     this.nullable = nullable;
   }
 
@@ -60,7 +63,7 @@ public class Parameter {
 
   @Override
   public String toString() {
-    return String.format("Parameter{name=%s,type=%s}", this.name, this.type);
+    return String.format("Parameter{name=%s,type=%s,nullable=%b}", this.name, this.type, this.nullable);
   }
 
   @Override
