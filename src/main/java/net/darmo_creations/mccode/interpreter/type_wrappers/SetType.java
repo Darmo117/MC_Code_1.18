@@ -34,7 +34,7 @@ public class SetType extends TypeBase<MCSet> {
     return MCSet.class;
   }
 
-  @Method(name = "clear", doc = "Removes all values from a set. Modifies the set.")
+  @Method(name = "clear", doc = "Removes all values from a `set. Modifies the `set.")
   public Void clear(final Scope scope, final MCSet self) {
     self.clear();
     return null;
@@ -42,9 +42,9 @@ public class SetType extends TypeBase<MCSet> {
 
   @Method(name = "add",
       parametersMetadata = {
-          @ParameterMeta(name = "value", mayBeNull = true, doc = "The value to add to the set.")
+          @ParameterMeta(name = "value", mayBeNull = true, doc = "The value to add to the `set.")
       },
-      doc = "Adds a value to a set. Modifies the set.")
+      doc = "Adds a value to a `set. Modifies the `set.")
   public Void add(final Scope scope, final MCSet self, final Object value) {
     self.add(ProgramManager.getTypeForValue(value).copy(scope, value));
     return null;
@@ -52,21 +52,21 @@ public class SetType extends TypeBase<MCSet> {
 
   @Method(name = "union",
       parametersMetadata = {
-          @ParameterMeta(name = "s", doc = "The set perform the union with.")
+          @ParameterMeta(name = "s", doc = "The `set perform the union with.")
       },
-      returnTypeMetadata = @ReturnMeta(doc = "A new set containing the values of both sets."),
-      doc = "Returns the union of values of two sets. Alias of '+' operator. " +
-          "Does not modify the sets it is applied to.")
+      returnTypeMetadata = @ReturnMeta(doc = "A new `set containing the values of both `set objects."),
+      doc = "Returns the union of values of two `set objects. Alias of '+' operator. " +
+          "Does not modify the `set objects it is applied to.")
   public MCSet union(final Scope scope, final MCSet self, final MCSet other) {
     return (MCSet) this.__add__(scope, self, other, false);
   }
 
   @Method(name = "intersection",
       parametersMetadata = {
-          @ParameterMeta(name = "s", doc = "The set to perform the intersection with.")
+          @ParameterMeta(name = "s", doc = "The `set to perform the intersection with.")
       },
-      returnTypeMetadata = @ReturnMeta(doc = "A new set containing only the values present in both sets."),
-      doc = "Returns the intersection of values of two sets. Does not modify the sets it is applied to.")
+      returnTypeMetadata = @ReturnMeta(doc = "A new `set containing only the values present in both `set objects."),
+      doc = "Returns the intersection of values of two `set objects. Does not modify the `set objects it is applied to.")
   public MCSet intersection(final Scope scope, final MCSet self, final MCSet other) {
     MCSet set = this.__copy__(scope, self);
     set.retainAll(other);

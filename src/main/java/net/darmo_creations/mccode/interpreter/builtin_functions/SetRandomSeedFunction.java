@@ -13,7 +13,7 @@ import net.darmo_creations.mccode.interpreter.types.BuiltinFunction;
  */
 @Function(parametersDoc = {"The new seed of the random number generator."},
     doc = "Sets the seed of the random number generator of this program/module. " +
-        "§lImportant§r: Seed will be lost if the level is unloaded while the program is running " +
+        "@Important: Seed will be lost if the level is unloaded while the program is running " +
         "and may thus cause unexpected behavior. As such, §oit is strongly discouraged to rely on " +
         "this function outside of debugging purposes§r.")
 public class SetRandomSeedFunction extends BuiltinFunction {

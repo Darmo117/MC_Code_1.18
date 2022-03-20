@@ -11,7 +11,7 @@ import net.darmo_creations.mccode.interpreter.types.BuiltinFunction;
  * Wrapper function for Java’s {@link Math#log(double)} function.
  */
 @Function(parametersDoc = {"A number."},
-    doc = "Returns the natural logarithm (base §oe§r) of a value.")
+    doc = "Returns the natural logarithm (base $e) of a value.")
 public class LogFunction extends BuiltinFunction {
   /**
    * Create a function that returns the natural logarithm (base e) of its parameter.

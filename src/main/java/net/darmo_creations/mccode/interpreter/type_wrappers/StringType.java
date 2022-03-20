@@ -31,22 +31,22 @@ public class StringType extends TypeBase<String> {
   }
 
   @Method(name = "lower",
-      returnTypeMetadata = @ReturnMeta(doc = "The resulting string."),
-      doc = "Converts a string to lower case.")
+      returnTypeMetadata = @ReturnMeta(doc = "The resulting `string."),
+      doc = "Converts a `string to lower case.")
   public String toLowerCase(final Scope scope, final String self) {
     return self.toLowerCase();
   }
 
   @Method(name = "upper",
-      returnTypeMetadata = @ReturnMeta(doc = "The resulting string."),
-      doc = "Converts a string to upper case.")
+      returnTypeMetadata = @ReturnMeta(doc = "The resulting `string."),
+      doc = "Converts a `string to upper case.")
   public String toUpperCase(final Scope scope, final String self) {
     return self.toUpperCase();
   }
 
   @Method(name = "title",
-      returnTypeMetadata = @ReturnMeta(doc = "The resulting string."),
-      doc = "Converts a string to title case.")
+      returnTypeMetadata = @ReturnMeta(doc = "The resulting `string."),
+      doc = "Converts a `string to title case.")
   public String toTitleCase(final Scope scope, final String self) {
     // Based on https://stackoverflow.com/a/1086134/3779986
     StringBuilder titleCase = new StringBuilder(self.length());
@@ -69,30 +69,30 @@ public class StringType extends TypeBase<String> {
 
   @Method(name = "starts_with",
       parametersMetadata = {
-          @ParameterMeta(name = "prefix", doc = "The string to search for.")
+          @ParameterMeta(name = "prefix", doc = "The `string to search for.")
       },
-      returnTypeMetadata = @ReturnMeta(doc = "True if the string begins with the given prefix, false otherwise."),
-      doc = "Returns whether a string starts with the given string.")
+      returnTypeMetadata = @ReturnMeta(doc = "#True if the `string begins with the given prefix, #false otherwise."),
+      doc = "Returns whether a `string starts with the given `string.")
   public Boolean startsWith(final Scope scope, final String self, final String prefix) {
     return self.startsWith(prefix);
   }
 
   @Method(name = "ends_with",
       parametersMetadata = {
-          @ParameterMeta(name = "suffix", doc = "The string to search for.")
+          @ParameterMeta(name = "suffix", doc = "The `string to search for.")
       },
-      returnTypeMetadata = @ReturnMeta(doc = "True if the string ends with the given suffix, false otherwise."),
-      doc = "Returns whether a string ends with the given string.")
+      returnTypeMetadata = @ReturnMeta(doc = "#True if the `string ends with the given suffix, #false otherwise."),
+      doc = "Returns whether a `string ends with the given `string.")
   public Boolean endsWith(final Scope scope, final String self, final String suffix) {
     return self.endsWith(suffix);
   }
 
   @Method(name = "count",
       parametersMetadata = {
-          @ParameterMeta(name = "needle", doc = "The string to get the number of occurences of.")
+          @ParameterMeta(name = "needle", doc = "The `string to get the number of occurences of.")
       },
       returnTypeMetadata = @ReturnMeta(doc = "The number of occurences of the needle."),
-      doc = "Returns the number of times the given string is present in another.")
+      doc = "Returns the number of times the given `string is present in another.")
   public Long count(final Scope scope, final String self, final String needle) {
     if ("".equals(needle)) {
       return (long) self.length() + 1;
@@ -102,30 +102,30 @@ public class StringType extends TypeBase<String> {
 
   @Method(name = "index",
       parametersMetadata = {
-          @ParameterMeta(name = "needle", doc = "The string to get the index of.")
+          @ParameterMeta(name = "needle", doc = "The `string to get the index of.")
       },
       returnTypeMetadata = @ReturnMeta(doc = "The index of the first occurence of the needle or -1 if it was not found."),
-      doc = "Returns the index of the first occurence of the given string in another, " +
+      doc = "Returns the index of the first occurence of the given `string in another, " +
           "or -1 if no occurence were found.")
   public Long indexOf(final Scope scope, final String self, final String needle) {
     return (long) self.indexOf(needle);
   }
 
   @Method(name = "strip",
-      returnTypeMetadata = @ReturnMeta(doc = "The resulting string."),
-      doc = "Removes all leading and trailing whitespace from a string.")
+      returnTypeMetadata = @ReturnMeta(doc = "The resulting `string."),
+      doc = "Removes all leading and trailing whitespace from a `string.")
   public String trim(final Scope scope, final String self) {
     return self.trim();
   }
 
   @Method(name = "left_strip",
-      returnTypeMetadata = @ReturnMeta(doc = "The resulting string."),
-      doc = "Removes all leading whitespace from a string.")
+      returnTypeMetadata = @ReturnMeta(doc = "The resulting `string."),
+      doc = "Removes all leading whitespace from a `string.")
   public String trimLeft(final Scope scope, final String self) {
     return self.replaceFirst("^\\s+", "");
   }
 
-  @Method(name = "right_strip", doc = "Removes all trailing whitespace from a string.")
+  @Method(name = "right_strip", doc = "Removes all trailing whitespace from a `string.")
   public String trimRight(final Scope scope, final String self) {
     return self.replaceFirst("\\s+$", "");
   }
@@ -133,10 +133,10 @@ public class StringType extends TypeBase<String> {
   @Method(name = "replace",
       parametersMetadata = {
           @ParameterMeta(name = "target", doc = "The substring to replace."),
-          @ParameterMeta(name = "replacement", doc = "The replacement string.")
+          @ParameterMeta(name = "replacement", doc = "The replacement `string.")
       },
-      returnTypeMetadata = @ReturnMeta(doc = "The resulting string."),
-      doc = "Replaces each substring of a string that matches the target string with " +
+      returnTypeMetadata = @ReturnMeta(doc = "The resulting `string."),
+      doc = "Replaces each substring of a `string that matches the target `string with " +
           "the specified literal replacement sequence.")
   public String replace(final Scope scope, final String self, final String target, final String replacement) {
     return self.replace(target, replacement);
@@ -145,10 +145,10 @@ public class StringType extends TypeBase<String> {
   @Method(name = "replace_regex",
       parametersMetadata = {
           @ParameterMeta(name = "target", doc = "The regex."),
-          @ParameterMeta(name = "replacement", doc = "The replacement string.")
+          @ParameterMeta(name = "replacement", doc = "The replacement `string.")
       },
-      returnTypeMetadata = @ReturnMeta(doc = "The resulting string."),
-      doc = "Replaces each substring of a string that matches the regex string with " +
+      returnTypeMetadata = @ReturnMeta(doc = "The resulting `string."),
+      doc = "Replaces each substring of a `string that matches the regex `string with " +
           "the specified literal replacement sequence.")
   public String replaceRegex(final Scope scope, final String self, final String target, final String replacement) {
     return self.replaceAll(target, replacement);
@@ -158,9 +158,9 @@ public class StringType extends TypeBase<String> {
       parametersMetadata = {
           @ParameterMeta(name = "separator", doc = "The delimiting regular expression.")
       },
-      returnTypeMetadata = @ReturnMeta(doc = "The list of strings computed by splitting the string around matches " +
+      returnTypeMetadata = @ReturnMeta(doc = "The `list of `string objects computed by splitting the `string around matches " +
           "of the given regular expression."),
-      doc = "Splits a string around matches of the given regular expression.")
+      doc = "Splits a `string around matches of the given regular expression.")
   public MCList split(final Scope scope, final String self, final String separator) {
     return new MCList(Arrays.asList(self.split(separator, -1)));
   }
@@ -169,8 +169,8 @@ public class StringType extends TypeBase<String> {
       parametersMetadata = {
           @ParameterMeta(name = "collection", doc = "A collection containing the values to join.")
       },
-      returnTypeMetadata = @ReturnMeta(doc = "The resulting string."),
-      doc = "Joins all values from the given list using the string as a delimiter.")
+      returnTypeMetadata = @ReturnMeta(doc = "The resulting `string."),
+      doc = "Joins all values from the given `list using the `string as a delimiter.")
   public String join(final Scope scope, final String self, final Object collection) {
     MCList list = ProgramManager.getTypeInstance(ListType.class).implicitCast(scope, collection);
     return list.stream().map(e -> ProgramManager.getTypeForValue(e).toString(e)).collect(Collectors.joining(self));
@@ -178,10 +178,10 @@ public class StringType extends TypeBase<String> {
 
   @Method(name = "format",
       parametersMetadata = {
-          @ParameterMeta(name = "args", doc = "A list of values to insert into the string.")
+          @ParameterMeta(name = "args", doc = "A `list of values to insert into the `string.")
       },
-      returnTypeMetadata = @ReturnMeta(doc = "The resulting string."),
-      doc = "Formats a string using the specified list of values.")
+      returnTypeMetadata = @ReturnMeta(doc = "The resulting `string."),
+      doc = "Formats a `string using the specified `list of values.")
   public String format(final Scope scope, final String self, final MCList args) {
     return String.format(self, args.toArray());
   }

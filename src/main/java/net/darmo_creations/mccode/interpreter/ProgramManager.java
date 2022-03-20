@@ -13,7 +13,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.storage.LevelResource;
@@ -97,7 +96,7 @@ public class ProgramManager implements NBTDeserializable {
         if (this.world.getGameRules().getBoolean(MCCode.GR_SHOW_ERROR_MESSAGES)) {
           this.world.getServer().sendMessage(
               new TranslatableComponent("mccode.interpreter.error.exception",
-                  e.getClass().getSimpleName(), e.getMessage()).setStyle(Style.EMPTY.withColor(ChatFormatting.RED)),
+                  e.getClass().getSimpleName(), e.getMessage()).withStyle(ChatFormatting.RED),
               Util.NIL_UUID
           );
         }
@@ -661,7 +660,7 @@ public class ProgramManager implements NBTDeserializable {
             type.getName(), propertyName));
       }
 
-      String doc = "§nType§r: " + formatTypeDoc(returnType.getName(), nullable);
+      String doc = DOC_TAG_PREFIX + "Type: " + formatTypeDoc(returnType.getName(), nullable);
       if (docString.length() != 0) {
         doc = docString + "\n" + doc;
       }
@@ -757,7 +756,7 @@ public class ProgramManager implements NBTDeserializable {
                                           final net.darmo_creations.mccode.interpreter.annotations.Method methodAnnotation,
                                           final List<? extends TypeBase<?>> paramsTypes,
                                           final TypeBase<?> returnType) {
-    String fname = "%s%s§r.§l%s§r".formatted(DOC_TYPE_FORMAT, typeName, methodAnnotation.name());
+    String fname = "%s%s.§2§l%s§r".formatted(DOC_TYPE_PREFIX, typeName, methodAnnotation.name());
     ParameterMeta[] paramsMetadata = methodAnnotation.parametersMetadata();
     List<Pair<Parameter, String>> paramsMeta = new ArrayList<>();
     for (int i = 0; i < paramsMetadata.length; i++) {
@@ -891,7 +890,7 @@ public class ProgramManager implements NBTDeserializable {
     }
 
     String doc = generateFunctionDoc(
-        "§l%s§r".formatted(function.getName()),
+        "§2§l%s§r".formatted(function.getName()),
         functionAnnotation.doc().trim(),
         paramsMeta,
         functionAnnotation.returnDoc().trim(),
@@ -913,17 +912,17 @@ public class ProgramManager implements NBTDeserializable {
       Parameter param = paramsMeta.get(i).getLeft();
       paramsDoc.append(formatTypeDoc(param.getType().getName(), param.isNullable()))
           .append(' ')
-          .append(DOC_PARAM_FORMAT)
-          .append(param.getName())
-          .append("§r");
+          .append(DOC_PARAM_PREFIX)
+          .append(param.getName());
     }
 
-    StringBuilder doc = new StringBuilder("§nSignature§r: ")
+    StringBuilder doc = new StringBuilder()
+        .append(DOC_TAG_PREFIX)
+        .append("Signature: ")
         .append(functionName)
         .append('(')
         .append(paramsDoc)
-        .append(')')
-        .append(" -> ")
+        .append(") -> ")
         .append(formatTypeDoc(returnType, returnNullable));
 
     // Function
@@ -933,11 +932,11 @@ public class ProgramManager implements NBTDeserializable {
 
     // Parameters
     if (!paramsMeta.isEmpty()) {
-      doc.append("\n§nParameters§r:\n");
+      doc.append('\n').append(DOC_TAG_PREFIX).append("Parameters:\n");
       for (Pair<Parameter, String> parameter : paramsMeta) {
         Parameter paramMeta = parameter.getLeft();
         String paramDoc = parameter.getRight().trim();
-        doc.append(DOC_PARAM_FORMAT).append(paramMeta.getName()).append("§r").append(": ").append(paramDoc).append('\n');
+        doc.append(DOC_PARAM_PREFIX).append(paramMeta.getName()).append(": ").append(paramDoc).append('\n');
       }
     } else {
       doc.append('\n');
@@ -945,7 +944,7 @@ public class ProgramManager implements NBTDeserializable {
 
     // Return type
     if (returnDoc.length() != 0) {
-      doc.append("§nReturns§r: ").append(returnDoc);
+      doc.append(DOC_TAG_PREFIX).append("Returns: ").append(returnDoc);
     }
 
     return doc.toString().trim();
@@ -959,12 +958,14 @@ public class ProgramManager implements NBTDeserializable {
    * @return The type name with a question mark appended at the end if nullable is true; only the type name otherwise.
    */
   private static String formatTypeDoc(final String typeName, final boolean nullable) {
-    return DOC_TYPE_FORMAT + typeName + "§r" + (nullable ? DOC_OPERATOR_FORMAT + "?§r" : "");
+    return DOC_TYPE_PREFIX + typeName + (nullable ? "?" : "");
   }
 
-  public static final String DOC_PARAM_FORMAT = "§" + ChatFormatting.ITALIC.getChar();
-  public static final String DOC_TYPE_FORMAT = "§" + ChatFormatting.AQUA.getChar();
-  public static final String DOC_OPERATOR_FORMAT = "§" + ChatFormatting.DARK_RED.getChar();
+  public static final String DOC_PARAM_PREFIX = "$";
+  public static final String DOC_TYPE_PREFIX = "`";
+  public static final String DOC_FUNCTION_PREFIX = "%";
+  public static final String DOC_LITERAL_PREFIX = "#";
+  public static final String DOC_TAG_PREFIX = "@";
 
   private static <C, I extends C> void setPrivateField(final Class<C> class_, I instance, final String fieldName, final Object fieldValue) {
     try {

@@ -12,7 +12,7 @@ import net.darmo_creations.mccode.interpreter.types.BuiltinFunction;
  * Wrapper function for Java’s {@link Math#ceil(double)} function.
  */
 @Function(parametersDoc = {"A number."},
-    doc = "Returns the smallest float value that is greater than or equal to the argument " +
+    doc = "Returns the smallest `int that is greater than or equal to the argument " +
         "and is equal to a mathematical integer.")
 public class CeilFunction extends BuiltinFunction {
   /**

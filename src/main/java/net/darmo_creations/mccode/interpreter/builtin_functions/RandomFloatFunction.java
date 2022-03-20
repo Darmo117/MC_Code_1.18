@@ -12,8 +12,8 @@ import net.darmo_creations.mccode.interpreter.types.BuiltinFunction;
  * A function that returns a random float in a range.
  */
 @Function(parametersDoc = {"The lowest possible value (included).", "The highest possible value (excluded)."},
-    returnDoc = "A random float value in [a, b[.",
-    doc = "Returns a random float in the given range. RNG seed may be set by set_random_seed function.")
+    returnDoc = "A random `float value in [$a, $b[.",
+    doc = "Returns a random `float in the given range. RNG seed may be set by %set_random_seed function.")
 public class RandomFloatFunction extends BuiltinFunction {
   /**
    * Create a function that returns a random float in a range.

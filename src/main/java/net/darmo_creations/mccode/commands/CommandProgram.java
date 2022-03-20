@@ -23,15 +23,15 @@ import net.darmo_creations.mccode.interpreter.types.BuiltinFunction;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.*;
 import net.minecraftforge.server.command.EnumArgument;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.regex.Pattern;
 
 /**
  * Command to interact with programs.
@@ -304,12 +304,88 @@ public class CommandProgram {
       Pair<String, Object[]> d = doc.get();
       context.getSource().sendSuccess(
           new TranslatableComponent("commands.program.feedback.doc_" + docType.name(), d.getRight())
-              .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)),
+              .withStyle(ChatFormatting.GREEN),
           true);
-      context.getSource().sendSuccess(new TextComponent(d.getLeft()), true);
+      context.getSource().sendSuccess(parseDoc(d.getLeft()), true);
       return 1;
     }
     return 0;
+  }
+
+  /**
+   * Formats the given doc string.
+   *
+   * @param rawDoc The raw documentation string.
+   * @return The resulting chat components.
+   */
+  private static Component parseDoc(final String rawDoc) {
+    BaseComponent component = new TextComponent("");
+    StringBuilder sb = new StringBuilder();
+    boolean escapeNext = false;
+
+    for (int i = 0; i < rawDoc.length(); i++) {
+      String c = rawDoc.charAt(i) + "";
+      if ("\\".equals(c) && !escapeNext) {
+        escapeNext = true;
+      } else if (ProgramManager.DOC_PARAM_PREFIX.equals(c)) {
+        i = consumePrefixedWord(rawDoc, component, sb, i,
+            param -> new TextComponent(param).withStyle(ChatFormatting.ITALIC));
+      } else if (ProgramManager.DOC_TYPE_PREFIX.equals(c)) {
+        i = consumePrefixedWord(rawDoc, component, sb, i,
+            type -> new TextComponent(type).withStyle(Style.EMPTY
+                .withColor(ChatFormatting.AQUA)
+                .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/program doc type " + type.toLowerCase()))
+                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("chat.type_doc.tooltip", type.toLowerCase())))));
+      } else if (ProgramManager.DOC_TAG_PREFIX.equals(c)) {
+        i = consumePrefixedWord(rawDoc, component, sb, i,
+            tag -> new TextComponent(tag).withStyle(ChatFormatting.UNDERLINE));
+      } else if (ProgramManager.DOC_FUNCTION_PREFIX.equals(c)) {
+        i = consumePrefixedWord(rawDoc, component, sb, i,
+            function -> new TextComponent(function).withStyle(Style.EMPTY
+                .withColor(ChatFormatting.DARK_GREEN)
+                .withItalic(true)
+                .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/program doc function " + function.toLowerCase()))
+                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("chat.function_doc.tooltip", function.toLowerCase())))));
+      } else if (ProgramManager.DOC_LITERAL_PREFIX.equals(c)) {
+        i = consumePrefixedWord(rawDoc, component, sb, i,
+            value -> new TextComponent(value).withStyle(ChatFormatting.DARK_PURPLE));
+      } else {
+        sb.append(c);
+      }
+    }
+
+    if (!sb.isEmpty()) {
+      component.append(sb.toString());
+    }
+
+    return component;
+  }
+
+  private static final Pattern WORD_PATTERN = Pattern.compile("\\w", Pattern.UNICODE_CHARACTER_CLASS);
+
+  private static int consumePrefixedWord(final String rawDoc, BaseComponent component, StringBuilder sb, final int start,
+                                         final Function<String, Component> getComponent) {
+    StringBuilder word = new StringBuilder();
+
+    for (int i = start + 1; i < rawDoc.length(); i++) {
+      char c = rawDoc.charAt(i);
+      if (WORD_PATTERN.asPredicate().test("" + c)) {
+        word.append(c);
+      } else {
+        break;
+      }
+    }
+
+    if (word.length() != 0) {
+      component.append(sb.toString());
+      component.append(getComponent.apply(word.toString()));
+      sb.setLength(0);
+      return start + word.length();
+    } else {
+      sb.append(rawDoc.charAt(start));
+    }
+
+    return start;
   }
 
   private static Optional<Pair<String, Object[]>> getTypeDoc(CommandContext<CommandSourceStack> context, final String typeName) {

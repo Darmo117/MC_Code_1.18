@@ -19,7 +19,7 @@ import java.util.stream.StreamSupport;
 /**
  * A function that returns the maximum value of an iterable object.
  */
-@Function(parametersDoc = {"An iterable object (map, list, set, range, string, etc.)."},
+@Function(parametersDoc = {"An iterable object (`map, `list, `set, `range, `string, etc.)."},
     returnDoc = "The object that has the highest value according to its natural ordering operator.",
     doc = "Returns the maximum value of an iterable object. Will throw an error if the object is empty.")
 public class MaxFunction extends BuiltinFunction {

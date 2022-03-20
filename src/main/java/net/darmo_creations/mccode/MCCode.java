@@ -6,7 +6,6 @@ import net.darmo_creations.mccode.interpreter.ProgramManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
@@ -121,13 +120,13 @@ public class MCCode {
             if (report.getLine() != -1 && report.getColumn() != -1) {
               message = new TextComponent(
                   String.format("[%s:%d:%d] ", report.getScope().getProgram().getName(), report.getLine(), report.getColumn()))
-                  .setStyle(Style.EMPTY.withColor(ChatFormatting.RED));
+                  .withStyle(ChatFormatting.RED);
             } else {
               message = new TextComponent(String.format("[%s] ", report.getScope().getProgram().getName()))
-                  .setStyle(Style.EMPTY.withColor(ChatFormatting.RED));
+                  .withStyle(ChatFormatting.RED);
             }
             message.append(new TranslatableComponent(report.getTranslationKey(), report.getArgs())
-                .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
+                .withStyle(ChatFormatting.RED));
 
             ServerLevel world = report.getScope().getProgram().getProgramManager().getWorld();
             // Only show error messages to players that can use the "program" command

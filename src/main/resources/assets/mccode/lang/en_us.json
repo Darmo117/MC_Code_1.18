@@ -1,4 +1,6 @@
 {
+  "chat.type_doc.tooltip": "Click to show doc for type %s.",
+  "chat.function_doc.tooltip": "Click to show doc for function %s.",
   "commands.program.feedback.program_loaded": "Program \"%s\" loaded.",
   "commands.program.feedback.program_unloaded": "Program \"%s\" unloaded.",
   "commands.program.feedback.program_reset": "Program \"%s\" reset.",

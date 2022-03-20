@@ -19,7 +19,7 @@ import java.util.Map;
  * <p>
  * New instances can be created by casting {@link List}s or {@link Map}s.
  */
-@Type(name = PosType.NAME, doc = "Type representing a block position.")
+@Type(name = PosType.NAME, doc = "Type representing a `block position.")
 public class PosType extends TypeBase<Position> {
   public static final String NAME = "pos";
 

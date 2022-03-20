@@ -11,11 +11,11 @@ import net.darmo_creations.mccode.interpreter.types.BuiltinFunction;
  * Wrapper function for Java’s {@link Math#atan2(double, double)} function.
  */
 @Function(parametersDoc = {"The ordinate coordinate.", "The abscissa coordinate."},
-    returnDoc = "The θ component of the point (r, θ) in polar coordinates " +
-        "that corresponds to the point (x, y) in Cartesian coordinates.",
-    doc = "Returns the angle θ from the conversion of rectangular coordinates (x, y)" +
-        " to polar coordinates (r, θ). This method computes the phase θ by computing an arc tangent" +
-        " of y/x in the range of -π to π.")
+    returnDoc = "The $θ component of the point ($r, $θ) in polar coordinates " +
+        "that corresponds to the point ($x, $y) in Cartesian coordinates.",
+    doc = "Returns the angle $θ from the conversion of rectangular coordinates ($x, $y)" +
+        " to polar coordinates ($r, $θ). This method computes the phase $θ by computing an arc tangent" +
+        " of $y/$x in the range of -π to π.")
 public class Atan2Function extends BuiltinFunction {
   /**
    * Create a function that returns the angle θ from the conversion of rectangular coordinates (x, y)

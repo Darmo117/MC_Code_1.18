@@ -11,7 +11,7 @@ import net.darmo_creations.mccode.interpreter.types.BuiltinFunction;
  * Wrapper function for Java’s {@link Math#hypot(double, double)} function.
  */
 @Function(parametersDoc = {"A number.", "A number."},
-    doc = "Returns sqrt(x² + y²).")
+    doc = "Returns %sqrt($x² + $y²).")
 public class HypotFunction extends BuiltinFunction {
   /**
    * Create a function that returns sqrt(x² + y²).

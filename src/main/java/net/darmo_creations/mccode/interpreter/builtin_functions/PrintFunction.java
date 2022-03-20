@@ -18,7 +18,7 @@ import net.minecraft.server.MinecraftServer;
  */
 @Function(parametersDoc = {
     "The value to print.",
-    "The channel where to print the value. Must be one of CHAT, CONSOLE or BOTH."},
+    "The channel where to print the value. Must be one of $CHAT, $CONSOLE or $BOTH."},
     doc = "Prints a value in the chat and/or server console.")
 public class PrintFunction extends BuiltinFunction {
   /**

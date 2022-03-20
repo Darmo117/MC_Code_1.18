@@ -35,18 +35,18 @@ public class MapType extends TypeBase<MCMap> {
     return MCMap.class;
   }
 
-  @Property(name = "keys", doc = "The set of all keys of a map.")
+  @Property(name = "keys", doc = "The `set of all keys of a `map.")
   public MCSet getKeys(final MCMap self) {
     return new MCSet(self.keySet());
   }
 
-  @Property(name = "values", doc = "The list of all values of a map. " +
-      "Order of values in the returned list is not guaranteed.")
+  @Property(name = "values", doc = "The `list of all values of a `map. " +
+      "Order of values in the returned `list is not guaranteed.")
   public MCList getValues(final MCMap self) {
     return new MCList(self.values());
   }
 
-  @Method(name = "clear", doc = "Removes all entries from a map. Modifies the map.")
+  @Method(name = "clear", doc = "Removes all entries from a `map. Modifies the `map.")
   public Void clear(final Scope scope, final MCMap self) {
     self.clear();
     return null;

@@ -13,14 +13,15 @@ import net.darmo_creations.mccode.interpreter.types.MCList;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A function that sorts the given iterable object.
  */
 @Function(parametersDoc = {
-    "An iterable object (list or string) to be sorted.",
-    "If true values will be sorted in reverse order, otherwise natural order will be used."},
-    returnDoc = "A new list or string containing all elements of the arguments sorted in natural or reverse order.",
+    "An iterable object (`list, `set or `string) to be sorted.",
+    "If #true values will be sorted in reverse order, otherwise natural order will be used."},
+    returnDoc = "A new `list or `string containing all elements of the arguments sorted in natural or reverse order.",
     doc = "Sorts the given iterable object. Returns a new object.")
 public class SortedFunction extends BuiltinFunction {
   /**
@@ -38,6 +39,10 @@ public class SortedFunction extends BuiltinFunction {
     boolean reversed = this.getParameterValue(scope, 1);
     if (p instanceof List<?> l) {
       MCList list = new MCList(l);
+      list.sort(ListType.comparator(scope, reversed));
+      return list;
+    } else if (p instanceof Set<?> s) {
+      MCList list = new MCList(s);
       list.sort(ListType.comparator(scope, reversed));
       return list;
     } else if (p instanceof String s) {

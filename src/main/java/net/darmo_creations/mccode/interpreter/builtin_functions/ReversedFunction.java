@@ -15,9 +15,9 @@ import java.util.List;
 /**
  * A function that reverses the given iterable object.
  */
-@Function(parametersDoc = {"An iterable object (list or string)."},
-    returnDoc = "A new list or string containing all elements of the arguments in reverse order.",
-    doc = "Reverses the order of the given iterable object. Returns a new object.")
+@Function(parametersDoc = {"An ordered iterable object (`list or `string)."},
+    returnDoc = "A new `list or `string containing all elements of the arguments in reverse order.",
+    doc = "Reverses the order of the given ordered iterable object. Returns a new object.")
 public class ReversedFunction extends BuiltinFunction {
   /**
    * Create a function that reverses the given iterable object.

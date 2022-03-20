@@ -12,7 +12,7 @@ import net.darmo_creations.mccode.interpreter.types.BuiltinFunction;
  * Wrapper function for Java’s {@link Math#floor(double)} function.
  */
 @Function(parametersDoc = {"A number."},
-    doc = "Returns the largest float value that is less than or equal to the argument " +
+    doc = "Returns the largest `int that is less than or equal to the argument " +
         "and is equal to a mathematical integer.")
 public class FloorFunction extends BuiltinFunction {
   /**

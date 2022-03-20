@@ -52,7 +52,7 @@ public class ListType extends TypeBase<MCList> {
     return MCList.class;
   }
 
-  @Method(name = "clear", doc = "Removes all values from a list. Modifies the list.")
+  @Method(name = "clear", doc = "Removes all values from a `list. Modifies the `list.")
   public Void clear(final Scope scope, final MCList self) {
     self.clear();
     return null;
@@ -60,9 +60,9 @@ public class ListType extends TypeBase<MCList> {
 
   @Method(name = "add",
       parametersMetadata = {
-          @ParameterMeta(name = "value", mayBeNull = true, doc = "The value to add to the list.")
+          @ParameterMeta(name = "value", mayBeNull = true, doc = "The value to add to the `list.")
       },
-      doc = "Adds a value at the end of a list. Modifies the list.")
+      doc = "Adds a value at the end of a `list. Modifies the `list.")
   public Void add(final Scope scope, final MCList self, final Object value) {
     self.add(ProgramManager.getTypeForValue(value).copy(scope, value));
     return null;
@@ -71,9 +71,9 @@ public class ListType extends TypeBase<MCList> {
   @Method(name = "insert",
       parametersMetadata = {
           @ParameterMeta(name = "index", doc = "Index at which to insert the value."),
-          @ParameterMeta(name = "value", mayBeNull = true, doc = "The value to insert into the list.")
+          @ParameterMeta(name = "value", mayBeNull = true, doc = "The value to insert into the `list.")
       },
-      doc = "Adds a value at the specified index of a list. Modifies the list.")
+      doc = "Adds a value at the specified index of a `list. Modifies the `list.")
   public Void insert(final Scope scope, final MCList self, final Long index, final Object value) {
     if (index < 0 || index > self.size()) {
       throw new IndexOutOfBoundsException(scope, index.intValue());
@@ -87,7 +87,7 @@ public class ListType extends TypeBase<MCList> {
           @ParameterMeta(name = "value", mayBeNull = true, doc = "The value to count the occurences of.")
       },
       returnTypeMetadata = @ReturnMeta(doc = "The number of occurences of the value."),
-      doc = "Counts the number of times the given value occurs in a list.")
+      doc = "Counts the number of times the given value occurs in a `list.")
   public Long count(final Scope scope, final MCList self, final Object value) {
     return self.stream().filter(e -> e.equals(value)).count();
   }
@@ -97,17 +97,17 @@ public class ListType extends TypeBase<MCList> {
           @ParameterMeta(name = "value", mayBeNull = true, doc = "The value to get the index of.")
       },
       returnTypeMetadata = @ReturnMeta(doc = "The index of the first occurence or -1 if the value was not found."),
-      doc = "Returns the index of the first occurence of the given value in a list." +
-          " Returns -1 if the value is not present in the list.")
+      doc = "Returns the index of the first occurence of the given value in a `list." +
+          " Returns -1 if the value is not present in the `list.")
   public Long indexOf(final Scope scope, final MCList self, final Object value) {
     return (long) self.indexOf(value);
   }
 
   @Method(name = "sort",
       parametersMetadata = {
-          @ParameterMeta(name = "reversed", doc = "If true the list will be sorted in reverse order.")
+          @ParameterMeta(name = "reversed", doc = "If #true the `list will be sorted in reverse order.")
       },
-      doc = "Sorts a list using natural ordering of its elements. Modifies the list.")
+      doc = "Sorts a `list using natural ordering of its elements. Modifies the `list.")
   public Void sort(final Scope scope, final MCList self, final boolean reversed) {
     self.sort(comparator(scope, reversed));
     return null;

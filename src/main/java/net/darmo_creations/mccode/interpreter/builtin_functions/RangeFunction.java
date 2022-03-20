@@ -13,8 +13,8 @@ import net.darmo_creations.mccode.interpreter.types.Range;
  * A function that returns a {@link Range} object.
  */
 @Function(parametersDoc = {"The first value.", "The last value.", "The increment step. May be negative."},
-    returnDoc = "A range object for the given arguments.",
-    doc = "Returns a range object. Meant to be used primarily in for-loop statements. Range objects are reusable.")
+    returnDoc = "A `range object for the given arguments.",
+    doc = "Returns a `range object. Meant to be used primarily in for-loop statements. `Range objects are reusable.")
 public class RangeFunction extends BuiltinFunction {
   /**
    * Create a function that returns an integer range generator.

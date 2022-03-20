@@ -14,7 +14,7 @@ import net.darmo_creations.mccode.interpreter.types.BuiltinFunction;
     returnDoc = "The angle in degrees.",
     doc = "Converts the given angle from radians to degrees. " +
         "The conversion from radians to degrees is generally inexact; " +
-        "users should not expect cos(to_radians(90.0)) to exactly equal 0.0.")
+        "users should not expect %cos(%to_radians(90.0)) to exactly equal 0.0.")
 public class ToDegreesFunction extends BuiltinFunction {
   /**
    * Create a function that converts the given angle in radians to degrees.

@@ -27,13 +27,13 @@ public class ItemType extends TypeBase<Item> {
     return Item.class;
   }
 
-  @Property(name = "id", doc = "The ID of an item.")
+  @Property(name = "id", doc = "The ID of an `item.")
   public String getID(final Item self) {
     //noinspection ConstantConditions
     return self.getRegistryName().toString();
   }
 
-  @Property(name = "max_stack_size", doc = "The max stack size of an item.")
+  @Property(name = "max_stack_size", doc = "The max stack size of an `item.")
   public Long getMaxStackSize(final Item self) {
     //noinspection deprecation
     return (long) self.getMaxStackSize();

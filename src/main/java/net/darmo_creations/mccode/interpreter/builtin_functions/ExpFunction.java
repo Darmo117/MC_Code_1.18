@@ -11,8 +11,8 @@ import net.darmo_creations.mccode.interpreter.types.BuiltinFunction;
  * Wrapper function for Java’s {@link Math#exp(double)} function.
  */
 @Function(parametersDoc = {"A number."},
-    returnDoc = "The value §oe§r^x.",
-    doc = "Returns Euler’s number §oe§r raised to the power of the given value.")
+    returnDoc = "The value $e^x.",
+    doc = "Returns Euler’s number $e raised to the power of the given value.")
 public class ExpFunction extends BuiltinFunction {
   /**
    * Create a function that returns Euler's number e raised to the power of its parameter.
