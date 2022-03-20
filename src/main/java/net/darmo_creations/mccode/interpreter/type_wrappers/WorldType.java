@@ -149,7 +149,9 @@ public class WorldType extends TypeBase<WorldProxy> {
    */
 
   @Method(name = "grant_all_advancements",
-      parametersMetadata = {@ParameterMeta(name = "targets", doc = "An entity selector that targets players.")},
+      parametersMetadata = {
+          @ParameterMeta(name = "targets", doc = "An entity selector that targets players.")
+      },
       returnTypeMetadata = @ReturnMeta(mayBeNull = true,
           doc = "The number of advancements granted to all targetted players or #null if the action failed."),
       doc = "Grants all advancements to the selected players.")
